@@ -1,23 +1,18 @@
 package com.example.graduate_proejct.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+public class User extends AbstractEntity<String>{
 
     private String userName;
 
@@ -40,4 +35,6 @@ public class User {
     @ManyToMany()
     Set<Role> roles;
 
+    @OneToMany(mappedBy = "user")
+    private Set<Order> orders;
 }

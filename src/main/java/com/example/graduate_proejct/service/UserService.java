@@ -5,11 +5,9 @@ import com.example.graduate_proejct.dto.response.UserResponse;
 import com.example.graduate_proejct.entity.Role;
 import com.example.graduate_proejct.entity.User;
 import com.example.graduate_proejct.mapper.UserMapper;
-import com.example.graduate_proejct.repository.RoleRepo;
-import com.example.graduate_proejct.repository.UserRepo;
+import com.example.graduate_proejct.repository.RoleRepository;
+import com.example.graduate_proejct.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,18 +22,18 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepo userRepo;
-    private final RoleRepo roleRepo;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepo;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
     public UserDetailsService userDetailsService() {
-        return username -> (UserDetails) userRepo.findByEmail(username)
+        return username -> (UserDetails) userRepository.findByEmail(username)
                 .orElseThrow(() ->  new RuntimeException("User not found by username = " + username));
     }
 
     public UserResponse createUser(UserRequest request) {
-        if(userRepo.existsByUserName(request.getUserName()))
+        if(userRepository.existsByUserName(request.getUserName()))
             throw new RuntimeException("Username already exist");
 
         User user = userMapper.createUser(request);
@@ -54,34 +52,35 @@ public class UserService {
             }
         }
         user.setRoles(roles);
-        return userMapper.toUserResponse(userRepo.save(user));
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
     public UserResponse updateUser(String id, UserRequest request) {
-        User user = userRepo.findById(id).orElseThrow(() ->  new RuntimeException("User not found by id=" + id));
+        User user = userRepository.findById(id).orElseThrow(() ->  new RuntimeException("User not found by id=" + id));
         userMapper.updateUser(user, request);
         var roles = roleRepo.findAllById(request.getRoles());
         user.setRoles(new HashSet<>(roles));
-        return  userMapper.toUserResponse(userRepo.save(user));
+        return  userMapper.toUserResponse(userRepository.save(user));
     }
 
     public List<UserResponse> getAllUser() {
-        return userRepo.findAll().stream().map(userMapper::toUserResponse).toList();
+        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
     public UserResponse getUserById(String id) {
-        return userMapper.toUserResponse(userRepo.findById(id).orElseThrow(() ->  new RuntimeException("User not found by id=" + id)) );
+        return userMapper.toUserResponse(userRepository.findById(id).orElseThrow(() ->  new RuntimeException("User not found by id=" + id)) );
     }
 
     public UserResponse getUserByName(String username) {
-        return userMapper.toUserResponse(userRepo.findByUserName(username)
+        return userMapper.toUserResponse(userRepository.findByUserName(username)
                 .orElseThrow(() ->  new RuntimeException("User not found by username = " + username)));
     }
 
     public void deleteUser(String id) {
-        userRepo.deleteById(id);
+        userRepository.deleteById(id);
     }
 
-    public void deleteAll() {userRepo.deleteAll();}
+    public void deleteAll() {
+        userRepository.deleteAll();}
 
 }

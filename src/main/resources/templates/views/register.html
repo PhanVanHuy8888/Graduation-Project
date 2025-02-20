@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Đăng ký</title>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+</head>
+<body>
+<div class="mt-4 mb-4 container form-signin">
+
+    <form onsubmit="event.preventDefault(); createUser();">
+        <div class="d-flex align-items-center mb-3 pb-1">
+            <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
+            <span class="h1 fw-bold mb-0">Đăng ký</span>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-6">
+                <label for="userName">Tên:</label>
+                <input type="text" class="form-control" id="userName" required/><br/>
+            </div>
+            <div class="col-md-6">
+                <label for="password">Mật khẩu:</label>
+                <input type="password" class="form-control" id="password" required/><br/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-6">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" required/><br/>
+            </div>
+            <div class="col-md-6">
+                <label for="phone">Điện thoại:</label>
+                <input type="text" class="form-control" id="phone" required/><br/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-6">
+                <label for="address">Địa chỉ:</label>
+                <input type="text" class="form-control" id="address" required/><br/>
+            </div>
+            <div class="col-md-6">
+                <label for="birthday">Ngày sinh:</label>
+                <input type="date" class="form-control w-50" id="birthday" required/><br/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Giới tính:</label>
+            <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input" id="male" name="gender" value="Male" required/>
+                <label class="form-check-label" for="male">Nam</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input" id="female" name="gender" value="Female" required/>
+                <label class="form-check-label" for="female">Nữ</label>
+            </div>
+        </div>
+        <div class="pt-1 mb-4">
+            <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block" type="submit">Đăng
+                ký
+            </button>
+        </div>
+        <p class="mb-5 pb-lg-2" style="color: #393f81;">You have an account? <a href="signin">Đăng nhập</a></p>
+    </form>
+    <div id="userDetail"></div>
+</div>
+
+<script>
+    async function createUser() {
+        const userName = document.getElementById("userName").value;
+        const password = document.getElementById("password").value;
+        const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
+        const address = document.getElementById("address").value;
+        const birthday = document.getElementById("birthday").value;
+        const gender = document.querySelector('input[name="gender"]:checked').value;
+        const roles = Array.from(document.querySelectorAll('input[name="roles"]:checked')).map(el => el.value);
+
+        const userRequest = {
+            userName,
+            password,
+            email,
+            phone,
+            address,
+            birthday,
+            gender,
+            roles
+        };
+
+        const response = await fetch('/api/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userRequest)
+        });
+
+        if (response.ok) {
+            window.location.href = '/signin';
+        } else {
+            document.getElementById("userDetail").innerText = 'Có lỗi xảy ra';
+        }
+    }
+</script>
+</body>
+</html>

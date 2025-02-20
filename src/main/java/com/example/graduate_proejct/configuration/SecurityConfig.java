@@ -28,15 +28,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()).cors(cors -> cors.disable())
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/**", "/users/**", "/listUser","/editUser", "/createUser").permitAll()
-                        .requestMatchers("/cates").permitAll()
+                        .requestMatchers( "/editUser","/api/users").permitAll()
+                        .requestMatchers("/assets/**", "/css/**", "/img/**", "/js/**", "/images/**").permitAll()
 
-                        .requestMatchers("/", "/home", "/register", "/signin").permitAll()
+                        .requestMatchers( "/register", "/signin", "/home", "/index").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form->form.loginPage("/signin")
-                        .loginProcessingUrl("/logins")
-                        .defaultSuccessUrl("/home", true)
+                        .loginProcessingUrl("/login")
+//                        .defaultSuccessUrl("/home", true)
                         .successHandler(authenticationSuccessHandler)
                 )
                 .logout(logout->logout.permitAll())

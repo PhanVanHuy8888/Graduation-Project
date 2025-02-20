@@ -4,7 +4,7 @@ import com.example.graduate_proejct.dto.request.RoleRequest;
 import com.example.graduate_proejct.dto.response.RoleResponse;
 import com.example.graduate_proejct.entity.Role;
 import com.example.graduate_proejct.mapper.RoleMapper;
-import com.example.graduate_proejct.repository.RoleRepo;
+import com.example.graduate_proejct.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class RoleService {
     @Autowired
-    private RoleRepo roleRepo;
+    private RoleRepository roleRepo;
 
     @Autowired
     private RoleMapper roleMapper;
