@@ -1,24 +1,23 @@
-package com.example.graduate_proejct.entity;
+package com.example.graduate_proejct.dto.request;
 
-import jakarta.persistence.*;
+import com.example.graduate_proejct.entity.CategoryMedicine;
+import com.example.graduate_proejct.entity.Supplier;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "medicine")
-public class Medicine extends AbstractEntity<Integer>{
+@Getter
+@Setter
+public class MedicineRequest {
 
     private String name;
 
     private Double price;
-
-    private String image;
 
     private String description;
 
@@ -38,11 +37,7 @@ public class Medicine extends AbstractEntity<Integer>{
 
     private String origin;
 
-    @ManyToOne
-    @JoinColumn(name = "category_medicine_id", nullable = false)
-    private CategoryMedicine categoryMedicine;
+    private Integer categoryMedicineId;
 
-    @ManyToOne
-    @JoinColumn(name = "supplier_id", nullable = false)
-    private Supplier supplier;
+    private Integer supplierId;
 }
