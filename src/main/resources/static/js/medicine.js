@@ -11,7 +11,7 @@ async function fetchCategoriesAndSuppliers() {
         const categoryResponse = await fetch(CATEGORY_API);
         const categories = await categoryResponse.json();
         let categorySelect = document.getElementById("categoryMedicine");
-        categorySelect.innerHTML = `<option value="">-- Chọn danh mục --</option>`;
+        categorySelect.innerHTML = `<option value="">-- Select Category Medicine --</option>`;
         categories.forEach(category => {
             categorySelect.innerHTML += `<option value="${category.id}">${category.categoryMedicineName}</option>`;
         });
@@ -20,7 +20,7 @@ async function fetchCategoriesAndSuppliers() {
         const supplierResponse = await fetch(SUPPLIER_API);
         const suppliers = await supplierResponse.json();
         let supplierSelect = document.getElementById("supplier");
-        supplierSelect.innerHTML = `<option value="">-- Chọn nhà cung cấp --</option>`;
+        supplierSelect.innerHTML = `<option value="">-- Select Supplier --</option>`;
         suppliers.forEach(supplier => {
             supplierSelect.innerHTML += `<option value="${supplier.id}">${supplier.supplierName}</option>`;
         });
@@ -42,7 +42,9 @@ function fetchMedicines() {
                     <td>${index + 1}</td>
                     <td>${medicine.name}</td>
                     <td>${medicine.price}</td>
-                    <td>${medicine.image}</td>
+                    <td>
+                        <img src="${medicine.image}" width="100" alt="$${medicine.image}" onerror="this.onerror=null;this.src='default.jpg';">
+                    </td>
                     <td>
                         <a class="btn btn-warning" href="edit-medicine?id=${medicine.id}">Edit</a>
                         <button class="btn btn-danger" onclick="deleteMedicine(${medicine.id})">Delete</button>
@@ -78,32 +80,40 @@ if (window.location.pathname.includes("/add-medicine")) {
             return;
         }
 
-        let formData = new FormData();
-        formData.append("name", document.getElementById("name").value);
-        formData.append("price", document.getElementById("price").value);
-        formData.append("description", document.getElementById("description").value);
-        formData.append("manufacturer", document.getElementById("manufacturer").value);
-        formData.append("ingredient", document.getElementById("ingredient").value);
-        formData.append("registrationNumber", document.getElementById("registrationNumber").value);
-        formData.append("qualityStandards", document.getElementById("qualityStandards").value);
-        formData.append("shelfLife", document.getElementById("shelfLife").value);
-        formData.append("dosageForm", document.getElementById("dosageForm").value);
-        formData.append("specification", document.getElementById("specification").value);
-        formData.append("origin", document.getElementById("origin").value);
-        formData.append("categoryMedicineId", categoryId);
-        formData.append("supplierId", supplierId);
+        let medicineData = {
+            name: document.getElementById("name").value,
+            price: document.getElementById("price").value,
+            description: document.getElementById("description").value,
+            manufacturer: document.getElementById("manufacturer").value,
+            ingredient: document.getElementById("ingredient").value,
+            registrationNumber: document.getElementById("registrationNumber").value,
+            qualityStandards: document.getElementById("qualityStandards").value,
+            shelfLife: document.getElementById("shelfLife").value,
+            dosageForm: document.getElementById("dosageForm").value,
+            specification: document.getElementById("specification").value,
+            origin: document.getElementById("origin").value,
+            categoryMedicineId: categoryId,
+            supplierId: supplierId
+        };
 
-        // Xử lý ảnh
+        let formData = new FormData();
+        formData.append("medicine", new Blob([JSON.stringify(medicineData)], { type: "application/json" }));
+
         let imageFile = document.getElementById("image").files[0];
         if (imageFile) {
             formData.append("image", imageFile);
-        }
+        } // Nếu không có ảnh, nó sẽ không được gửi đi
 
         fetch(API_URL, {
             method: "POST",
             body: formData
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text) });
+                }
+                return response.json();
+            })
             .then(() => window.location.href = "list-medicine")
             .catch(error => console.error("Error adding medicine:", error));
     });

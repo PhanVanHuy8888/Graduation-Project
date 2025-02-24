@@ -10,29 +10,42 @@
 <h1 class="text-center" id="formTitle">Add Medicine</h1>
 <form id="addMedicineForm" class="w-50 mx-auto" enctype="multipart/form-data">
 
-    <div class="mb-3"><label class="form-label">Name</label><input type="text" id="name" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Price</label><input type="number" id="price" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Description</label><input type="text" id="description" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Manufacturer</label><input type="text" id="manufacturer" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Ingredient</label><input type="text" id="ingredient" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Registration Number</label><input type="text" id="registrationNumber" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Quality Standards</label><input type="text" id="qualityStandards" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Shelf Life</label><input type="text" id="shelfLife" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Dosage Form</label><input type="text" id="dosageForm" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Specification</label><input type="text" id="specification" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Origin</label><input type="text" id="origin" class="form-control" required></div>
+    <div class="mb-3"><label class="form-label">Name</label><input type="text" id="name" class="form-control" required>
+    </div>
+    <div class="mb-3"><label class="form-label">Price</label><input type="number" id="price" class="form-control"
+                                                                    required></div>
+    <div class="mb-3"><label class="form-label">Description</label><input type="text" id="description"
+                                                                          class="form-control" required></div>
+    <div class="mb-3"><label class="form-label">Manufacturer</label><input type="text" id="manufacturer"
+                                                                           class="form-control" required></div>
+    <div class="mb-3"><label class="form-label">Ingredient</label><input type="text" id="ingredient"
+                                                                         class="form-control" required></div>
+    <div class="mb-3"><label class="form-label">Registration Number</label><input type="text" id="registrationNumber"
+                                                                                  class="form-control" required></div>
+    <div class="mb-3"><label class="form-label">Quality Standards</label><input type="text" id="qualityStandards"
+                                                                                class="form-control" required></div>
+    <div class="mb-3"><label class="form-label">Shelf Life</label><input type="text" id="shelfLife" class="form-control"
+                                                                         required></div>
+    <div class="mb-3"><label class="form-label">Dosage Form</label><input type="text" id="dosageForm"
+                                                                          class="form-control" required></div>
+    <div class="mb-3"><label class="form-label">Specification</label><input type="text" id="specification"
+                                                                            class="form-control" required></div>
+    <div class="mb-3"><label class="form-label">Origin</label><input type="text" id="origin" class="form-control"
+                                                                     required></div>
     <div class="mb-3">
         <label class="form-label">Chọn ảnh</label>
         <input type="file" id="image" class="form-control" accept="image/*">
     </div>
-    <select id="categoryMedicine" class="form-control" required>
-        <option value="">-- Select Category Medicine --</option>
-    </select>
-
-    <select id="supplier" class="form-control" required>
-        <option value="">-- Select Supplier --</option>
-    </select>
-
+    <div class="mb-3">
+        <select id="categoryMedicine" class="form-control" required>
+            <option value="">-- Select Category Medicine --</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <select id="supplier" class="form-control" required>
+            <option value="">-- Select Supplier --</option>
+        </select>
+    </div>
     <div class="d-flex gap-2">
         <button type="submit" class="btn btn-warning w-100">Save</button>
         <a href="list-medicine" class="btn btn-primary w-100">Back</a>

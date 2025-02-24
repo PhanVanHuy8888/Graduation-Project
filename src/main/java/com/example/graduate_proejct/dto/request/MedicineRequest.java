@@ -33,6 +33,8 @@ public class MedicineRequest {
 
     private String dosageForm;
 
+    private Integer quantity;
+
     private String specification;
 
     private String origin;

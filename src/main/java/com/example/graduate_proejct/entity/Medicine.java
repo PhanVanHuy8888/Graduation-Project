@@ -34,6 +34,8 @@ public class Medicine extends AbstractEntity<Integer>{
 
     private String dosageForm;
 
+    private Integer quantity;
+
     private String specification;
 
     private String origin;

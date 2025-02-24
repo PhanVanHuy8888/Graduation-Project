@@ -20,8 +20,8 @@ public class MedicineController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Medicine> createMedicine(
-            @ModelAttribute MedicineRequest medicineRequest,
-            @RequestParam("image") MultipartFile imageFile) throws IOException {
+            @RequestPart("medicine") MedicineRequest medicineRequest,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile) throws IOException {
 
         Medicine savedMedicine = medicineService.createMedicine(medicineRequest, imageFile);
         return ResponseEntity.ok(savedMedicine);
@@ -38,9 +38,15 @@ public class MedicineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Medicine> updateMedicine(@PathVariable Integer id, @RequestBody Medicine medicine) {
-        return ResponseEntity.ok(medicineService.updateMedicine(id, medicine));
+    public ResponseEntity<Medicine> updateMedicine(
+            @PathVariable Integer id,
+            @RequestPart("medicine") MedicineRequest medicineRequest,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile) throws IOException {
+
+        Medicine updatedMedicine = medicineService.updateMedicine(id, medicineRequest, imageFile);
+        return ResponseEntity.ok(updatedMedicine);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteMedicine(@PathVariable Integer id) {

@@ -24,28 +24,36 @@ import java.util.List;
 public class MedicineService {
     private final MedicineRepository medicineRepository;
 
-    private CategoryMedicineRepository categoryMedicineRepository;
+    private final CategoryMedicineRepository categoryMedicineRepository;
 
-    private SupplierRepository supplierRepository;
+    private final SupplierRepository supplierRepository;
 
     private static final String IMAGE_DIRECTORY = "src/main/resources/static/img/";
 
     public Medicine createMedicine(MedicineRequest medicineRequest, MultipartFile imageFile) throws IOException {
-        // Kiểm tra nếu thư mục chưa tồn tại thì tạo mới
-        File directory = new File(IMAGE_DIRECTORY);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-        // Lưu ảnh vào thư mục static/img/
-        String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
-        String imagePath = IMAGE_DIRECTORY + fileName;
-        Path path = Paths.get(imagePath);
-        Files.write(path, imageFile.getBytes());
-
         Medicine medicine = new Medicine();
         BeanUtils.copyProperties(medicineRequest, medicine);
-        medicine.setImage("/img/" + fileName);
 
+        // Kiểm tra nếu ảnh được gửi lên
+        if (imageFile != null && !imageFile.isEmpty()) {
+            // Kiểm tra nếu thư mục chưa tồn tại thì tạo mới
+            File directory = new File(IMAGE_DIRECTORY);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            // Lưu ảnh vào thư mục static/img/
+            String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+            String imagePath = IMAGE_DIRECTORY + fileName;
+            Path path = Paths.get(imagePath);
+            Files.write(path, imageFile.getBytes());
+
+            medicine.setImage("/img/" + fileName);
+        } else {
+            medicine.setImage(null); // Nếu không có ảnh, đặt giá trị `null` hoặc một ảnh mặc định
+        }
+
+        // Xử lý các thông tin khác
         CategoryMedicine category = categoryMedicineRepository.findById(medicineRequest.getCategoryMedicineId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
         Supplier supplier = supplierRepository.findById(medicineRequest.getSupplierId())
@@ -53,8 +61,10 @@ public class MedicineService {
 
         medicine.setCategoryMedicine(category);
         medicine.setSupplier(supplier);
+
         return medicineRepository.save(medicine);
     }
+
 
     public Medicine getMedicineById(Integer id) {
         return medicineRepository.findById(id)
@@ -65,23 +75,41 @@ public class MedicineService {
         return medicineRepository.findAll();
     }
 
-    public Medicine updateMedicine(Integer id, Medicine medicineDetails) {
+    public Medicine updateMedicine(Integer id, MedicineRequest medicineRequest, MultipartFile imageFile) throws IOException {
         Medicine medicine = getMedicineById(id);
-        medicine.setName(medicineDetails.getName());
-        medicine.setPrice(medicineDetails.getPrice());
-        medicine.setDescription(medicineDetails.getDescription());
-        medicine.setManufacturer(medicineDetails.getManufacturer());
-        medicine.setIngredient(medicineDetails.getIngredient());
-        medicine.setRegistrationNumber(medicineDetails.getRegistrationNumber());
-        medicine.setQualityStandards(medicineDetails.getQualityStandards());
-        medicine.setShelfLife(medicineDetails.getShelfLife());
-        medicine.setDosageForm(medicineDetails.getDosageForm());
-        medicine.setSpecification(medicineDetails.getSpecification());
-        medicine.setOrigin(medicineDetails.getOrigin());
-        medicine.setCategoryMedicine(medicineDetails.getCategoryMedicine());
-        medicine.setSupplier(medicineDetails.getSupplier());
+
+        // Cập nhật thông tin từ request
+        BeanUtils.copyProperties(medicineRequest, medicine, "image");
+
+        // Kiểm tra nếu có ảnh mới
+        if (imageFile != null && !imageFile.isEmpty()) {
+            // Lưu ảnh vào thư mục static/img/
+            File directory = new File(IMAGE_DIRECTORY);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+            String imagePath = IMAGE_DIRECTORY + fileName;
+            Path path = Paths.get(imagePath);
+            Files.write(path, imageFile.getBytes());
+
+            // Cập nhật đường dẫn ảnh mới
+            medicine.setImage("/img/" + fileName);
+        }
+
+        // Cập nhật thông tin danh mục và nhà cung cấp
+        CategoryMedicine category = categoryMedicineRepository.findById(medicineRequest.getCategoryMedicineId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+        Supplier supplier = supplierRepository.findById(medicineRequest.getSupplierId())
+                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+
+        medicine.setCategoryMedicine(category);
+        medicine.setSupplier(supplier);
+
         return medicineRepository.save(medicine);
     }
+
 
     public void deleteMedicine(Integer id) {
         medicineRepository.deleteById(id);
