@@ -8,7 +8,7 @@
 </head>
 <body class="container mt-5">
 <h1 class="text-center" id="formTitle">Edit Medicine</h1>
-<form id="editMedicineForm" class="w-50 mx-auto">
+<form id="editMedicineForm" class="w-50 mx-auto" enctype="multipart/form-data">
     <input type="hidden" id="medicineId">
 
     <div class="mb-3"><label class="form-label">Name</label><input type="text" id="name" class="form-control" required></div>
@@ -22,18 +22,17 @@
     <div class="mb-3"><label class="form-label">Dosage Form</label><input type="text" id="dosageForm" class="form-control" required></div>
     <div class="mb-3"><label class="form-label">Specification</label><input type="text" id="specification" class="form-control" required></div>
     <div class="mb-3"><label class="form-label">Origin</label><input type="text" id="origin" class="form-control" required></div>
+    <div class="mb-3"><label class="form-label">Quantity</label><input type="text" id="quantity" class="form-control" required></div>
     <div class="mb-3">
-        <label class="form-label">Chọn ảnh</label>
+        <label class="form-label">Select Image</label>
         <input type="file" id="image" class="form-control" accept="image/*">
     </div>
     <select id="categoryMedicine" class="form-control" required>
         <option value="">-- Select Category Medicine --</option>
     </select>
-
     <select id="supplier" class="form-control" required>
         <option value="">-- Select Supplier --</option>
     </select>
-
     <div class="d-flex gap-2">
         <button type="submit" class="btn btn-warning w-100">Save</button>
         <a href="list-medicine" class="btn btn-primary w-100">Back</a>

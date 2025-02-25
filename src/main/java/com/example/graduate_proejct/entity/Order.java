@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -16,9 +17,11 @@ import java.util.Set;
 @Table(name = "orders")
 public class Order extends AbstractEntity<Integer>{
 
-    private String orderId;
+    private String code;
 
     private String email;
+
+    private String phone;
 
     private String address;
 
@@ -26,17 +29,12 @@ public class Order extends AbstractEntity<Integer>{
 
     private Double price;
 
-    private String pay;
+    private String payment;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToMany
-    @JoinTable(
-            name = "order_medicine",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "medicine_id")
-    )
-    private Set<Medicine> medicines;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderDetail> orderDetails;
 }

@@ -27,13 +27,13 @@ public class OrderService {
 
     public Order updateOrder(Integer id, Order orderDetails) {
         Order order = getOrderById(id);
-        order.setUser(orderDetails.getUser());
-        order.setEmail(orderDetails.getEmail());
-        order.setAddress(orderDetails.getAddress());
-        order.setNote(orderDetails.getNote());
-        order.setMedicines(orderDetails.getMedicines());
-        order.setPrice(orderDetails.getPrice());
-        order.setPay(orderDetails.getPay());
+//        order.setUser(orderDetails.getUser());
+//        order.setEmail(orderDetails.getEmail());
+//        order.setAddress(orderDetails.getAddress());
+//        order.setNote(orderDetails.getNote());
+//        order.setMedicines(orderDetails.getMedicines());
+//        order.setPrice(orderDetails.getPrice());
+//        order.setPay(orderDetails.getPay());
         return orderRepository.save(order);
     }
 

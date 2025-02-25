@@ -34,10 +34,11 @@ public class SecurityConfig {
                         .requestMatchers( "/register", "/signin", "/home", "/index").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(form->form.loginPage("/signin")
+                .formLogin(form->form
+                        .loginPage("/signin")
                         .loginProcessingUrl("/login")
-//                        .defaultSuccessUrl("/home", true)
                         .successHandler(authenticationSuccessHandler)
+                        .permitAll()
                 )
                 .logout(logout->logout.permitAll())
                 .exceptionHandling(e -> e.accessDeniedPage("/access-denied"));

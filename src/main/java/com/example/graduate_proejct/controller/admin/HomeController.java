@@ -75,4 +75,6 @@ public class HomeController {
         return "admin/Medicine/medicineEdit";
     }
 
+
+
 }
