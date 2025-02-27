@@ -1,5 +1,6 @@
 const API_URL = "http://localhost:8080/api/categories";
 
+
 // Fetch danh sách category
 function fetchCategories() {
     fetch(API_URL)
@@ -74,3 +75,7 @@ if (window.location.pathname.includes("/edit-cate")) {
 if (document.getElementById("categoryTable")) {
     fetchCategories();
 }
+
+// Display category index
+
+

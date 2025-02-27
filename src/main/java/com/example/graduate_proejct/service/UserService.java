@@ -72,7 +72,7 @@ public class UserService {
     }
 
     public UserResponse getUserByName(String username) {
-        return userMapper.toUserResponse(userRepository.findByUserName(username)
+        return userMapper.toUserResponse(userRepository.findByEmail(username)
                 .orElseThrow(() ->  new RuntimeException("User not found by username = " + username)));
     }
 

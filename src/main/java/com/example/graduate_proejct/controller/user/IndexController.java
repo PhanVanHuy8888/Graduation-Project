@@ -41,6 +41,11 @@ public class IndexController {
         return "error-403";
     }
 
+    @GetMapping("/success")
+    public String success() {
+        return "views/success";
+    }
+
     @GetMapping("/cart")
     public String Cart() {
         return "views/cart";
