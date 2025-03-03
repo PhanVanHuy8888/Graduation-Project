@@ -7,36 +7,77 @@ const USER_API  = "http://localhost:8080/api/users/getUser";
 const userId = localStorage.getItem("userId") || ""; // Lấy userId từ localStorage nếu có
 
 function loadCart() {
-    fetch(`${CART_API}/${userId}`)
-        .then(response => response.json())
-        .then(data => {
-            let cartTable = document.getElementById("cartBody");
-            cartTable.innerHTML = "";
-            data.forEach(item => {
-                cartTable.innerHTML += `
-                            <tr>
-                                <td>${item.medicineName}</td>
-                                <td>${item.price.toFixed(2)}</td>
-                                <td>${item.quantity}</td>
-                                <td>${item.total.toFixed(2)}</td>
-                                <td><button class="btn btn-danger btn-sm" onclick="removeFromCart(${item.id})">Remove</button></td>
-                            </tr>`;
-            });
-        })
-        .catch(error => console.error("Error loading cart:", error));
+    const userId = localStorage.getItem("userId"); // Lấy userId nếu có
+    let cartTable = document.getElementById("cartBody");
+    cartTable.innerHTML = "";
+
+    if (userId) {
+        // Nếu có userId, tải giỏ hàng từ database
+        fetch(`${CART_API}/${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(item => {
+                    cartTable.innerHTML += `
+                        <tr>
+                            <td>${item.medicineName}</td>
+                            <td>${item.price.toFixed(2)}</td>
+                            <td>${item.quantity}</td>
+                            <td>${(item.price * item.quantity).toFixed(2)}</td>
+                            <td><button class="btn btn-danger btn-sm" onclick="removeFromCart(${item.id}, true)">Remove</button></td>
+                        </tr>`;
+                });
+            })
+            .catch(error => console.error("Error loading cart:", error));
+    } else {
+        // Nếu không có userId, tải giỏ hàng từ localStorage
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        cart.forEach((item, index) => {
+            cartTable.innerHTML += `
+                <tr>
+                    <td>${item.medicineName}</td>
+                    <td>${item.price.toFixed(2)}</td>
+                    <td>${item.quantity}</td>
+                    <td>${(item.price * item.quantity).toFixed(2)}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="removeFromCart(${index}, false)">Remove</button></td>
+                </tr>`;
+        });
+    }
 }
 
+
 function removeFromCart(cartId) {
-    fetch(`${CART_API}/${cartId}`, { method: "DELETE" })
-        .then(() => loadCart())
-        .catch(error => console.error("Error removing item:", error));
+    const userId = localStorage.getItem("userId"); // Kiểm tra userId
+
+    if (userId) {
+        // Nếu có userId, gọi API để xóa sản phẩm khỏi database
+        fetch(`${CART_API}/${cartId}`, { method: "DELETE" })
+            .then(() => loadCart()) // Cập nhật lại giỏ hàng
+            .catch(error => console.error("Error removing item:", error));
+    } else {
+        // Nếu không có userId, xóa sản phẩm khỏi localStorage
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        cart.splice(cartId, 1); // Xóa theo index
+        localStorage.setItem("cart", JSON.stringify(cart));
+        loadCart(); // Cập nhật lại giao diện
+    }
 }
 
 function clearCart() {
-    fetch(`${CART_API}/${userId}`, { method: "DELETE" })
-        .then(() => loadCart())
-        .catch(error => console.error("Error clearing cart:", error));
+    const userId = localStorage.getItem("userId");
+
+    if (userId) {
+        // Nếu có userId, gọi API để xóa toàn bộ giỏ hàng
+        fetch(`${CART_API}/${userId}`, { method: "DELETE" })
+            .then(() => loadCart()) // Cập nhật lại giỏ hàng
+            .catch(error => console.error("Error clearing cart:", error));
+    } else {
+        // Nếu không có userId, xóa giỏ hàng khỏi localStorage
+        localStorage.removeItem("cart");
+        loadCart(); // Cập nhật lại giao diện
+    }
 }
+
 
 document.addEventListener("DOMContentLoaded", loadCart);
 
