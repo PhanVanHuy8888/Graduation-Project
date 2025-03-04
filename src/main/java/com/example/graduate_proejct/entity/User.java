@@ -36,10 +36,6 @@ public class User{
 
     private String gender;
 
-    private Date createTime;
-
-    private Date updateTime;
-
     @ManyToMany()
     Set<Role> roles;
 

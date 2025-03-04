@@ -38,7 +38,6 @@ public class UserService {
 
         User user = userMapper.createUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setCreateTime(new Date());
         Set<Role> roles = new HashSet<>();
         if(request.getRoles() == null || request.getRoles().isEmpty()){
             Role defautRole = roleRepo.findByName("USER").orElseThrow(() -> new RuntimeException("This role not found"));

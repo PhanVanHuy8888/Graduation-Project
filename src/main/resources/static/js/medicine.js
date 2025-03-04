@@ -1,6 +1,6 @@
 const API_URL = "http://localhost:8080/api/medicines";
 const CATEGORY_API = "http://localhost:8080/api/category-medicine";
-const CART_API  = "http://localhost:8080/api/cart";
+const CART_API = "http://localhost:8080/api/cart";
 const SUPPLIER_API = "http://localhost:8080/api/supplier";
 const urlParams = new URLSearchParams(window.location.search);
 const medicineId = urlParams.get("id");
@@ -74,29 +74,26 @@ async function fetchMedicinesIndex() {
             }).format(medicine.price);
 
             medicineCard.innerHTML = `
-                    <div class="card" >
+                <div class="card">
+                    <a href="/detail-medicine?id=${medicine.id}" class="text-decoration-none text-dark">
                         <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light" data-mdb-ripple-color="light">
                             <img class="w-100" src="${medicine.image}" alt="${medicine.name}">
-
                         </div>
                         <div class="card-body">
-                            <a href="#" class="text-reset">
-                                <h5 class="card-title mb-3">${medicine.name}</h5>
-                            </a>
-                            <a href="#" class="text-reset">
-                                <p>${medicine.categoryMedicine.categoryMedicineName}</p>
-                            </a>
+                            <h5 class="card-title mb-3">${medicine.name}</h5>
+                            <p>${medicine.categoryMedicine.categoryMedicineName}</p>
                             <h6 class="mb-3">
                                 <span class="text-black rounded-pill py-2 px-3 font-weight-bold">
                                     ${formattedPrice}
                                 </span>
                             </h6>
-                            <button class="btn btn-primary" onclick="addToCart('${medicine.name}', ${medicine.price})">
-                                Chọn mua
-                            </button>
                         </div>
-                    </div>
-                `;
+                    </a>
+                    <button class="btn btn-primary" onclick="addToCart('${medicine.name}', ${medicine.price})">
+                        Chọn mua
+                    </button>
+                </div>
+            `;
 
             medicineContainer.appendChild(medicineCard);
         });
@@ -104,6 +101,7 @@ async function fetchMedicinesIndex() {
         console.error('Error fetching products:', error);
     }
 }
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const userId = document.getElementById("userId")?.value;
@@ -121,54 +119,84 @@ document.addEventListener("DOMContentLoaded", function () {
 //     localStorage.setItem("userId", userId);
 //     console.log("User ID stored:", userId);
 // }
+async function addToCart(medicineName, price, quantity = 1) {
+    let userId = localStorage.getItem("userId"); // Lấy userId từ localStorage
 
-async function addToCart(medicineName, price) {
-    const userId = localStorage.getItem("userId") || ""; // Lấy userId từ localStorage nếu có
+    // Kiểm tra nếu trên trang chi tiết sản phẩm, lấy số lượng từ input
+    const quantityInput = document.getElementById("inputQuantity");
+    if (quantityInput) {
+        quantity = parseInt(quantityInput.value) || 1;
+    }
 
-    console.log("Sending request with:", { userId, medicineName, price });
+    console.log("Adding to cart:", { userId, medicineName, price, quantity });
 
-    const cartData = {
-        userId: userId,
+    const cartItem = {
         medicineName: medicineName,
         price: price,
-        quantity: 1
+        quantity: quantity
     };
 
-    try {
-        const response = await fetch(CART_API, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(cartData)
-        });
+    if (userId) {
+        // 🟢 Có userId -> Gửi API để lưu vào database
+        try {
+            const response = await fetch(CART_API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId, ...cartItem })
+            });
 
-        const result = await response.json();
-        console.log("Response:", result);
-        alert(result.message);
-    } catch (error) {
-        console.error("Error adding to cart:", error);
-        alert("Lỗi khi thêm vào giỏ hàng!");
+            const result = await response.json();
+            console.log("Response:", result);
+            alert(result.message);
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            alert("Lỗi khi thêm vào giỏ hàng!");
+        }
+    } else {
+        //  Không có userId -> Lưu vào localStorage
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        // Kiểm tra nếu sản phẩm đã có trong giỏ hàng -> Cộng dồn số lượng
+        const existingItem = cart.find(item => item.medicineName === medicineName);
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            cart.push(cartItem);
+        }
+
+        // Lưu lại vào localStorage
+        localStorage.setItem("cart", JSON.stringify(cart));
+        alert("Sản phẩm đã được thêm vào giỏ hàng");
     }
 }
 
 
-// document.addEventListener("DOMContentLoaded", loadMedicines);
 
 // End add Cart
 
 // Xóa thuốc
-function deleteMedicine(id) {
-    if (confirm("Are you sure you want to delete this medicine?")) {
-        fetch(`${API_URL}/${id}`, { method: "DELETE" })
-            .then(() => fetchMedicines())
-            .catch(error => console.error("Error deleting medicine:", error));
+async function deleteMedicine(id) {
+    if (confirm("Bạn có chắc chắn muốn xóa thuốc này?")) {
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {method: "DELETE"});
+            if (!response.ok) {
+                throw new Error("Lỗi khi xóa thuốc!");
+            }
+            alert("Xóa thuốc thành công!");
+            fetchMedicines();
+        } catch (error) {
+            console.error("Error deleting medicine:", error);
+            alert("Không thể xóa thuốc! Có thể thuốc này đang được sử dụng.");
+        }
     }
 }
+
 
 // Thêm thuốc
 if (window.location.pathname.includes("/add-medicine")) {
     fetchCategoriesAndSuppliers();
 
-    document.getElementById("addMedicineForm").addEventListener("submit", function(event) {
+    document.getElementById("addMedicineForm").addEventListener("submit", function (event) {
         event.preventDefault();
 
         let categoryId = document.getElementById("categoryMedicine").value;
@@ -197,7 +225,7 @@ if (window.location.pathname.includes("/add-medicine")) {
         };
 
         let formData = new FormData();
-        formData.append("medicine", new Blob([JSON.stringify(medicineData)], { type: "application/json" }));
+        formData.append("medicine", new Blob([JSON.stringify(medicineData)], {type: "application/json"}));
 
         let imageFile = document.getElementById("image").files[0];
         if (imageFile) {
@@ -210,7 +238,9 @@ if (window.location.pathname.includes("/add-medicine")) {
         })
             .then(response => {
                 if (!response.ok) {
-                    return response.text().then(text => { throw new Error(text) });
+                    return response.text().then(text => {
+                        throw new Error(text)
+                    });
                 }
                 return response.json();
             })
@@ -277,7 +307,7 @@ if (window.location.pathname.includes("/edit-medicine")) {
         };
 
         let formData = new FormData();
-        formData.append("medicine", new Blob([JSON.stringify(medicineData)], { type: "application/json" }));
+        formData.append("medicine", new Blob([JSON.stringify(medicineData)], {type: "application/json"}));
         let imageFile = document.getElementById("image").files[0];
         if (imageFile) {
             formData.append("image", imageFile);
@@ -290,7 +320,9 @@ if (window.location.pathname.includes("/edit-medicine")) {
         })
             .then(response => {
                 if (!response.ok) {
-                    return response.text().then(text => { throw new Error(text) });
+                    return response.text().then(text => {
+                        throw new Error(text)
+                    });
                 }
                 return response.json();
             })
@@ -299,13 +331,142 @@ if (window.location.pathname.includes("/edit-medicine")) {
     });
 }
 
+// Medicine Detail
+
+async function loadMedicineDetails(medicineId) {
+    try {
+        const response = await fetch(`${API_URL}/${medicineId}`);
+
+        // Kiểm tra phản hồi API
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // Kiểm tra nếu API không trả về JSON hợp lệ
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            throw new Error("Response is not JSON");
+        }
+
+        const medicine = await response.json();
+        const medicineContainer = document.getElementById('detailMedicine');
+
+        // Xóa nội dung cũ trước khi hiển thị dữ liệu mới
+        medicineContainer.innerHTML = '';
+
+        // Định dạng giá bằng JavaScript
+        const formattedPrice = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(medicine.price);
+
+        // Tạo HTML hiển thị thông tin sản phẩm
+        const medicineCard = document.createElement('div');
+        medicineCard.innerHTML = `
+            <div class="row gx-4 gx-lg-5 align-items-center">
+                <div class="col-md-6">
+                    <img class="w-100" src="${medicine.image}" alt="${medicine.name}">
+                </div>
+                <div class="col-md-6">
+                    <h1 class="display-5 fw-bolder">${medicine.name}</h1>
+                    <div class="fs-5 mb-5">
+                        <span>${formattedPrice}</span>
+                    </div>
+                    <p class="lead">${medicine.description}</p>
+                    <div class="d-flex">
+                        <input class="form-control text-center me-3" id="inputQuantity" type="number" value="1"
+                               style="max-width: 3rem"/>
+                        <button class="btn btn-outline-dark flex-shrink-0" type="button" onclick="addToCart('${medicine.name}', ${medicine.price})">
+                            <i class="me-1"></i>
+                            Chọn mua
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        medicineContainer.appendChild(medicineCard);
+    } catch (error) {
+        console.error('Lỗi khi tải thông tin sản phẩm:', error);
+        document.getElementById("detailMedicine").textContent = 'Có lỗi xảy ra khi tải dữ liệu';
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const medicineId = new URLSearchParams(window.location.search).get('id');
+    if (medicineId) {
+        loadMedicineDetails(medicineId);
+    }
+    fetchProducts(); // Gọi hàm fetchProducts khi trang được load
+});
+
+function showAlert() {
+    var alertBox = document.getElementById('customAlert');
+    alertBox.classList.add('show');
+    setTimeout(function () {
+        alertBox.classList.remove('show');
+    }, 3000);
+}
+
+async function fetchProducts() {
+    try {
+        const response = await fetch(API_URL);
+        const medicine = await response.json();
+        const medicineContainer = document.getElementById('medicineContainers');
+
+        // Lấy 4 sản phẩm đầu tiên từ danh sách
+        const limitedProducts = medicine.slice(0, 4);
+
+        medicine.forEach((medicine) => {
+            const medicineCard = document.createElement('div');
+            medicineCard.classList.add('col-lg-4', 'col-md-12', 'mb-4');
+
+            // Định dạng giá bằng JavaScript
+            const formattedPrice = new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(medicine.price);
+
+            // Rút gọn tên sản phẩm nếu cần
+            const truncatedName = medicine.name.length > 20 ? medicine.name.substring(0, 20) + '...' : medicine.name;
+
+            medicineCard.innerHTML = `
+                <div class="card">
+                    <a href="/detail-medicine?id=${medicine.id}" class="text-decoration-none text-dark">
+                        <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light" data-mdb-ripple-color="light">
+                            <img class="w-100" src="${medicine.image}" alt="${medicine.name}">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">${truncatedName}</h5>
+                            <p>${medicine.categoryMedicine.categoryMedicineName}</p>
+                            <h6 class="mb-3">
+                                <span class="text-black rounded-pill py-2 px-3 font-weight-bold">
+                                    ${formattedPrice}
+                                </span>
+                            </h6>
+                        </div>
+                    </a>
+                    <button class="btn btn-primary" onclick="addToCart('${medicine.name}', ${medicine.price})">
+                        Chọn mua
+                    </button>
+                </div>
+            `;
+
+            medicineContainer.appendChild(medicineCard);
+        });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+    }
+}
+
+
 // Gọi API khi tải trang danh sách thuốc
-if (window.location.pathname.includes("list-medicine")) fetchMedicines();
-if (window.location.pathname.includes("index")) fetchMedicinesIndex();
-
-
-
-
+document.addEventListener("DOMContentLoaded", () => {
+    if (window.location.pathname.includes("list-medicine")) fetchMedicines();
+    if (window.location.pathname.includes("index") || window.location.pathname === "/") fetchMedicinesIndex();
+});
 
 
 

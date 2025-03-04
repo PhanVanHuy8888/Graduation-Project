@@ -51,6 +51,11 @@ public class IndexController {
         return "views/cart";
     }
 
+    @GetMapping("/medicine")
+    public String Medicine() {
+        return "views/medicine";
+    }
+
     @GetMapping("/detail-medicine")
     public String detailMedicine() {
         return "views/detailMedicine";
