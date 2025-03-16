@@ -1,13 +1,25 @@
 package com.example.graduate_proejct.controller.admin;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
 
     @GetMapping("/home")
-    public String home() {
+    public String home(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
+            String username = authentication.getName();
+            model.addAttribute("username", username);
+            model.addAttribute("isAuthenticated", true);
+        } else {
+            model.addAttribute("isAuthenticated", false);
+        }
         return "admin/home";
     }
 
@@ -75,6 +87,27 @@ public class HomeController {
         return "admin/Medicine/medicineEdit";
     }
 
+    //    User
+    @GetMapping("/list-user")
+    public String ListUser() {
+        return "admin/User/userList";
+    }
 
+    //    Order
+    @GetMapping("/list-order")
+    public String ListOrder() {
+        return "admin/Order/orderList";
+    }
 
+    //    Contact
+    @GetMapping("/list-contact")
+    public String ListContact() {
+        return "admin/Contact/contactList";
+    }
+
+    //    Article
+    @GetMapping("/list-article")
+    public String ListArticle() {
+        return "admin/Article/articleList";
+    }
 }
