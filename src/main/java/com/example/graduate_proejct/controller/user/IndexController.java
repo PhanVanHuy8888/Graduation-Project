@@ -16,25 +16,27 @@ public class IndexController {
 
     @GetMapping("/index")
     public String index(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        model.addAttribute("isAuthenticated", false); // Giá trị mặc định
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
             String username = authentication.getName();
 
-            // Giả sử bạn có UserRepository để tìm user theo username
+            // Kiểm tra người dùng có trong database không
             User user = userRepository.findByEmail(username)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElse(null);
 
-            model.addAttribute("username", username);
-            model.addAttribute("userId", user.getId());  // Gửi userId đến frontend
-            System.out.println(user.getId());
-            model.addAttribute("isAuthenticated", true);
-        } else {
-            model.addAttribute("isAuthenticated", false);
+            if (user != null) {
+                model.addAttribute("username", username);
+                model.addAttribute("userId", user.getId());
+                model.addAttribute("isAuthenticated", true); // Cập nhật lại giá trị
+                System.out.println(user.getId());
+            }
         }
 
         return "views/index";
     }
+
 
     @GetMapping("/access-denied")
     public String error() {
