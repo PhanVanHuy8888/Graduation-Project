@@ -1,5 +1,7 @@
 package com.example.graduate_proejct.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +16,7 @@ public class OrderDetail extends AbstractEntity<Integer>{
     @ManyToOne
     @JoinColumn(name = "order_id" ,nullable = false,
             foreignKey = @ForeignKey(name = "ORDER_DETAIL_ORD_FK"))
+    @JsonIgnore
     private Order order;
 
     @ManyToOne

@@ -1,5 +1,6 @@
 package com.example.graduate_proejct.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,10 +28,9 @@ public class Order extends AbstractEntity<Integer>{
 
     private String note;
 
-    private Double price;
-
     private String payment;
 
+    private String paymentStatus;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

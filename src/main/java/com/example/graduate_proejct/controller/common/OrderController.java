@@ -1,17 +1,18 @@
 package com.example.graduate_proejct.controller.common;
 
 import com.example.graduate_proejct.dto.request.OrderRequest;
+import com.example.graduate_proejct.dto.response.OrderResponse;
 import com.example.graduate_proejct.entity.Order;
 import com.example.graduate_proejct.repository.UserRepository;
 import com.example.graduate_proejct.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/order")
@@ -23,7 +24,6 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody OrderRequest orderRequest, Principal principal) {
-        String username = principal.getName();
         try{
             return ResponseEntity.ok(orderService.createOrder(orderRequest));
         }catch (Exception e){
@@ -39,8 +39,10 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+    public ResponseEntity<List<OrderResponse>> getAllOrders() {
+        List<OrderResponse> orders = orderService.getAllOrders().stream()
+                .map(OrderResponse::new).collect(Collectors.toList());
+        return ResponseEntity.ok(orders);
     }
 
     @PutMapping("/{id}")
