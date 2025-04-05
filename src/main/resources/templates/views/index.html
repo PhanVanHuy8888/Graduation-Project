@@ -47,14 +47,14 @@
                     EcoPharm shop
                 </h2>
                 <p>
-                    There are many variations of passages of Lorem Ipsum available
+                    EcoPharm - Sức khỏe xanh, cuộc sống lành
                 </p>
             </div>
             <div class="img-box">
-                <img src="images/shop-img.jpg" alt="">
+                <img src="images/shop-image.png" alt="">
             </div>
             <div class="btn-box">
-                <a href="">
+                <a href="/medicine">
                     Buy Now
                 </a>
             </div>
@@ -85,7 +85,7 @@
                     <p>
                         Nơi chăm sóc sức khỏe của bạn với những sản phẩm chất lượng, an toàn và đáng tin cậy. Chúng tôi cam kết mang đến giải pháp y tế tốt nhất cho mọi gia đình
                     </p>
-                    <a href="">
+                    <a href="/article">
                         Đọc thêm
                     </a>
                 </div>
@@ -112,10 +112,12 @@
             <div class="row" id="medicineContainer">
             </div>
         </div>
+        <div class="mt-4 mb-5 text-center" id="paginationContainer"></div>
     </div>
 </section>
 
 <!-- end fruit section -->
+
 
 <!-- footer section -->
 <div th:include="static/footer :: footer"></div>
@@ -127,7 +129,6 @@
 <script type="text/javascript" src="/js/custom.js"></script>
 <script src="/js/medicine.js"></script>
 <script>
-
     async function fetchCategory() {
         console.log("fetchCategory function is called!"); // Log kiểm tra
 
@@ -153,7 +154,7 @@
                 listItem.classList.add("nav-item");
 
                 listItem.innerHTML = `
-                    <a class="nav-link" href="category.html?id=${category.id}">
+                    <a class="nav-link" href="/${category.url}">
                         ${category.categoryName}
                     </a>
                 `;
@@ -167,7 +168,7 @@
         }
     }
 
-    window.onload = function() {
+    window.onload = function () {
         fetchCategory();
     };
 </script>

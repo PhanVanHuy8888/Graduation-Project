@@ -14,5 +14,7 @@ import lombok.Setter;
 @Table(name = "category")
 public class Category extends AbstractEntity<Integer>{
 
+    private String url;
+
     private String categoryName;
 }

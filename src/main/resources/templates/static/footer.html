@@ -1,11 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .info_section ul li {
+            margin-bottom: 12px;
+        }
+
+        .info_section ul li span {
+            color: #6c757d;
+        }
+
+
+        ul li span {
+            color: #74777c;
+        }
+
+    </style>
 </head>
 <body>
-<footer>
+
+<footer th:fragment="footer">
     <section class="info_section layout_padding">
         <div class="container">
             <div class="info_logo">
@@ -13,34 +29,39 @@
                     EcoPharm
                 </h2>
             </div>
-            <div class="info_contact">
+            <div class="container mt-5">
                 <div class="row">
+                    <!-- VỀ CHÚNG TÔI -->
                     <div class="col-md-4">
-                        <a href="">
-                            <img src="images/location.png" alt="">
-                            <span>
-                Thượng Mỗ, Đan Phượng, Hà Nội
-              </span>
-                        </a>
+                        <h6 class="fw-bold text-uppercase">Về chúng tôi</h6>
+                        <ul class="list-unstyled">
+                            <li><span>Thượng Mỗ, Đan Phượng, Hà Nội</span></li>
+                            <li></li>
+                            <li><span>Call : +84 777 137 220</span></li>
+                            <li></li>
+                            <li><span>hphan0859@gmail.com</span></li>
+                        </ul>
                     </div>
+
+                    <!-- DANH MỤC -->
                     <div class="col-md-4">
-                        <a href="">
-                            <img src="images/call.png" alt="">
-                            <span>
-                Call : +84 777 137 220
-              </span>
-                        </a>
+                        <h6 class="fw-bold text-uppercase">Danh mục</h6>
+                        <ul class="list-unstyled" id="categoryList">
+                        </ul>
                     </div>
+
+                    <!-- TÌM HIỂU THÊM -->
                     <div class="col-md-4">
-                        <a href="">
-                            <img src="images/mail.png" alt="">
-                            <span>
-                hphan0859@gmail.com
-              </span>
-                        </a>
+                        <h6 class="fw-bold text-uppercase">EcoPharm</h6>
+                        <ul class="list-unstyled">
+                            <li><span>Không chỉ là hiệu thuốc – chúng tôi là người bạn đồng hành cùng sức khỏe của
+                                bạn.</span></li>
+                        </ul>
                     </div>
                 </div>
             </div>
+
+
             <div class="row">
                 <div class="col-md-8 col-lg-9">
                     <div class="info_form">
@@ -91,6 +112,7 @@
             <a href="https://html.design/">còn sức khỏe thì do cách sống quyết định.</a>
         </p>
     </section>
+
 </footer>
 </body>
 </html>

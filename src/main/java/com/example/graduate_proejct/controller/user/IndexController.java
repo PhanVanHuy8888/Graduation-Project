@@ -58,6 +58,21 @@ public class IndexController {
         return "views/medicine";
     }
 
+    @GetMapping("/contact")
+    public String Contact() {
+        return "views/contact";
+    }
+
+    @GetMapping("/article")
+    public String Article() {
+        return "views/article";
+    }
+
+    @GetMapping("/edit-article")
+    public String editArticle() {
+        return "views/articleDetail";
+    }
+
     @GetMapping("/detail-medicine")
     public String detailMedicine() {
         return "views/detailMedicine";

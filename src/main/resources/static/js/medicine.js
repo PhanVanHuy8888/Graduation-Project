@@ -82,17 +82,26 @@ function viewMedicine(medicine) {
 document.addEventListener("DOMContentLoaded", fetchMedicines);
 
 
-async function fetchMedicinesIndex() {
+async function fetchMedicinesIndex(page = 0, size = 6) {
     try {
-        const response = await fetch(API_URL);
-        const medicine = await response.json();
-        const medicineContainer = document.getElementById('medicineContainer');
+        // Gửi yêu cầu đến API với tham số phân trang
+        const response = await fetch(`${API_URL}?page=${page}&size=${size}`);
+        const data = await response.json();
 
-        medicine.forEach((medicine) => {
+        // Lấy thông tin sản phẩm và phân trang từ dữ liệu trả về
+        const medicines = data.medicines;
+        const totalItems = data.totalItems;
+        const totalPages = data.totalPages;
+
+        const medicineContainer = document.getElementById('medicineContainer');
+        medicineContainer.innerHTML = "";  // Xóa nội dung cũ
+
+        // Hiển thị các sản phẩm
+        medicines.forEach((medicine) => {
             const medicineCard = document.createElement('div');
             medicineCard.classList.add('col-lg-4', 'col-md-12', 'mb-4');
 
-            // Định dạng giá bằng JavaScript
+            // Định dạng giá
             const formattedPrice = new Intl.NumberFormat('vi-VN', {
                 style: 'currency',
                 currency: 'VND'
@@ -122,8 +131,31 @@ async function fetchMedicinesIndex() {
 
             medicineContainer.appendChild(medicineCard);
         });
+
+        // Hiển thị phân trang
+        displayPagination(page, totalPages);
+
     } catch (error) {
         console.error('Error fetching products:', error);
+    }
+}
+
+function displayPagination(currentPage, totalPages) {
+    const paginationContainer = document.getElementById('paginationContainer');
+    paginationContainer.innerHTML = ""; // Xóa phân trang cũ
+
+    for (let i = 0; i < totalPages; i++) {
+        const pageButton = document.createElement('button');
+        pageButton.classList.add('btn', 'btn-secondary', 'mx-1');
+        pageButton.innerText = i + 1;
+        pageButton.onclick = () => fetchMedicinesIndex(i);
+
+        // Đánh dấu trang hiện tại
+        if (i === currentPage) {
+            pageButton.classList.add('btn-primary');
+        }
+
+        paginationContainer.appendChild(pageButton);
     }
 }
 
@@ -487,6 +519,7 @@ async function fetchProducts() {
 
 // Gọi API khi tải trang danh sách thuốc
 document.addEventListener("DOMContentLoaded", () => {
+    fetchMedicinesIndex();
     if (window.location.pathname.includes("list-medicine")) fetchMedicines();
     if (window.location.pathname.includes("index") || window.location.pathname === "/") fetchMedicinesIndex();
 });

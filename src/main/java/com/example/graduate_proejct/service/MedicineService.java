@@ -9,6 +9,8 @@ import com.example.graduate_proejct.repository.MedicineRepository;
 import com.example.graduate_proejct.repository.SupplierRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -71,8 +73,8 @@ public class MedicineService {
                 .orElseThrow(() -> new RuntimeException("Medicine not found"));
     }
 
-    public List<Medicine> getAllMedicines() {
-        return medicineRepository.findAll();
+    public Page<Medicine> getAllMedicines(Pageable pageable) {
+        return medicineRepository.findAll(pageable);
     }
 
     public Medicine updateMedicine(Integer id, MedicineRequest medicineRequest, MultipartFile imageFile) throws IOException {
@@ -109,6 +111,11 @@ public class MedicineService {
 
         return medicineRepository.save(medicine);
     }
+
+    public Page<Medicine> getMedicinesByCate(Integer categoryId, Pageable pageable) {
+        return medicineRepository.findByCategoryMedicineId(categoryId, pageable);
+    }
+
 
 
     public void deleteMedicine(Integer id) {
