@@ -29,10 +29,12 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable()).cors(cors -> cors.disable())
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers( "/home/**").hasRole("ADMIN")
+                        .requestMatchers( "/api/cart/**").hasRole("USER")
                         .requestMatchers("/assets/**", "/css/**", "/img/**", "/js/**", "/images/**").permitAll()
 
                         .requestMatchers( "/register", "/signin", "/home", "/index", "/**").permitAll()
                         .anyRequest().authenticated()
+
                 )
                 .formLogin(form->form
                         .loginPage("/signin")

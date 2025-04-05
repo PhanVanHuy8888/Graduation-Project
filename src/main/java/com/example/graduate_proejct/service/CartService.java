@@ -6,14 +6,20 @@ import com.example.graduate_proejct.entity.User;
 import com.example.graduate_proejct.repository.CartRepository;
 import com.example.graduate_proejct.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(CartService.class);
 
     public List<Cart> getCartItems(String userId) {
         User user = userRepository.findById(userId)
@@ -21,9 +27,15 @@ public class CartService {
         return cartRepository.findByUser(user);
     }
 
+
     public Cart addToCart(CartRequest cartRequest) {
-        System.out.println("Received cart request: " + cartRequest);
-        System.out.println("Looking for user with ID: " + cartRequest.getUserId());
+        if (cartRequest.getUserId() == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+
+        logger.info("Received cart request: {}", cartRequest);
+        logger.info("Looking for user with ID: {}", cartRequest.getUserId());
+
         User user = userRepository.findById(cartRequest.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -33,11 +45,18 @@ public class CartService {
         cartItem.setUser(user);
         cartItem.setMedicineName(cartRequest.getMedicineName());
         cartItem.setPrice(cartRequest.getPrice());
-        cartItem.setQuantity(cartItem.getQuantity() != null ? cartItem.getQuantity() + cartRequest.getQuantity() : cartRequest.getQuantity());
-        cartItem.setTotal(cartItem.getQuantity() * cartRequest.getPrice());
+
+        // Kiểm tra số lượng
+        Integer existingQuantity = cartItem.getQuantity() != null ? cartItem.getQuantity() : 0;
+        cartItem.setQuantity(existingQuantity + cartRequest.getQuantity());
+
+        // Tính toán tổng tiền
+        double total = cartItem.getQuantity() * cartRequest.getPrice();
+        cartItem.setTotal(total);
 
         return cartRepository.save(cartItem);
     }
+
 
     public void removeFromCart(Integer cartId) {
         cartRepository.deleteById(cartId);

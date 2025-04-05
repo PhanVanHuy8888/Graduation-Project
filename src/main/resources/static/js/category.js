@@ -71,11 +71,11 @@ if (window.location.pathname.includes("/edit-cate")) {
     });
 }
 
+
 // Load danh sách khi vào trang list.html
 if (document.getElementById("categoryTable")) {
     fetchCategories();
 }
 
-// Display category index
 
 

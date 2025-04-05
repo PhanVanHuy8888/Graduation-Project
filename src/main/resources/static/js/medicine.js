@@ -48,6 +48,7 @@ function fetchMedicines() {
                     <td>${medicine.price}</td>
                     <td>
                         <a class="badge badge-outline-warning" href="edit-medicine?id=${medicine.id}">Edit</a>
+                        <a class="badge badge-outline-info" href="#" onclick='viewMedicine(${JSON.stringify(medicine)})'>View</a>
                         <button class="badge badge-outline-danger" onclick="deleteMedicine(${medicine.id})">Delete</button>
                     </td>
                 `;
@@ -56,6 +57,30 @@ function fetchMedicines() {
         })
         .catch(error => console.error("Error fetching medicines:", error));
 }
+
+function viewMedicine(medicine) {
+    document.getElementById("medicineImage").src = medicine.image;
+    document.getElementById("medicineName").textContent = medicine.name;
+    document.getElementById("medicinePrice").textContent = medicine.price + " VND";
+    document.getElementById("medicineDescription").textContent = medicine.description;
+    document.getElementById("medicineManufacturer").textContent = medicine.manufacturer;
+    document.getElementById("medicineIngredient").textContent = medicine.ingredient;
+    document.getElementById("medicineRegistrationNumber").textContent = medicine.registrationNumber;
+    document.getElementById("medicineQualityStandards").textContent = medicine.qualityStandards;
+    document.getElementById("medicineShelfLife").textContent = medicine.shelfLife;
+    document.getElementById("medicineDosageForm").textContent = medicine.dosageForm;
+    document.getElementById("medicineQuantity").textContent = medicine.quantity;
+    document.getElementById("medicineSpecification").textContent = medicine.specification;
+    document.getElementById("medicineOrigin").textContent = medicine.origin;
+
+    // Mở modal bằng JavaScript thuần
+    let modal = new bootstrap.Modal(document.getElementById("medicineModal"));
+    modal.show();
+}
+
+
+document.addEventListener("DOMContentLoaded", fetchMedicines);
+
 
 async function fetchMedicinesIndex() {
     try {
@@ -120,7 +145,24 @@ document.addEventListener("DOMContentLoaded", function () {
 //     console.log("User ID stored:", userId);
 // }
 async function addToCart(medicineName, price, quantity = 1) {
-    let userId = localStorage.getItem("userId"); // Lấy userId từ localStorage
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    let userId = localStorage.getItem("userId");
+    if (!userId) {
+        alert("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+        window.location.href = "/signin"; // Redirect người dùng đến trang đăng nhập
+        return;
+    }
+
+    // Fetch thông tin sản phẩm để kiểm tra số lượng
+    const response = await fetch(API_URL);
+    const medicines = await response.json();
+    const medicine = medicines.find(med => med.name === medicineName);
+
+    // Nếu sản phẩm hết hàng, hiển thị thông báo và thoát hàm
+    if (medicine && medicine.quantity === 0) {
+        alert("Sản phẩm hết hàng!");
+        return;
+    }
 
     // Kiểm tra nếu trên trang chi tiết sản phẩm, lấy số lượng từ input
     const quantityInput = document.getElementById("inputQuantity");
@@ -136,41 +178,22 @@ async function addToCart(medicineName, price, quantity = 1) {
         quantity: quantity
     };
 
-    if (userId) {
-        // 🟢 Có userId -> Gửi API để lưu vào database
-        try {
-            const response = await fetch(CART_API, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userId, ...cartItem })
-            });
+    // Gửi yêu cầu API để lưu vào giỏ hàng của người dùng
+    try {
+        const response = await fetch(CART_API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId, ...cartItem })
+        });
 
-            const result = await response.json();
-            console.log("Response:", result);
-            alert(result.message);
-        } catch (error) {
-            console.error("Error adding to cart:", error);
-            alert("Lỗi khi thêm vào giỏ hàng!");
-        }
-    } else {
-        //  Không có userId -> Lưu vào localStorage
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-        // Kiểm tra nếu sản phẩm đã có trong giỏ hàng -> Cộng dồn số lượng
-        const existingItem = cart.find(item => item.medicineName === medicineName);
-        if (existingItem) {
-            existingItem.quantity += quantity;
-        } else {
-            cart.push(cartItem);
-        }
-
-        // Lưu lại vào localStorage
-        localStorage.setItem("cart", JSON.stringify(cart));
-        alert("Sản phẩm đã được thêm vào giỏ hàng");
+        const result = await response.json();
+        console.log("Response:", result);
+        alert(result.message);
+    } catch (error) {
+        console.error("Error adding to cart:", error);
+        alert("Lỗi khi thêm vào giỏ hàng!");
     }
 }
-
-
 
 // End add Cart
 
@@ -467,6 +490,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.location.pathname.includes("list-medicine")) fetchMedicines();
     if (window.location.pathname.includes("index") || window.location.pathname === "/") fetchMedicinesIndex();
 });
+
+window.addEventListener("load", function () {
+    localStorage.clear();
+    console.log("LocalStorage đã được xóa khi tải trang.");
+});
+
 
 
 

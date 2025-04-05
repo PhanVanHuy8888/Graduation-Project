@@ -69,7 +69,7 @@
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="userDropdown">
                                         <a class="dropdown-item" th:text="${username}"></a>
-                                        <a  class="dropdown-item" href="cart">Giỏ hàng</a>
+                                        <a th:if="${isAuthenticated == true}" class="dropdown-item" href="cart">Giỏ hàng</a>
                                         <a th:if="${isAuthenticated == false}" class="dropdown-item" href="signin">Đăng nhập</a>
                                         <a th:if="${isAuthenticated == false}" class="dropdown-item" href="register">Đăng ký</a>
                                         <div class="dropdown-divider"></div>
