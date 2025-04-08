@@ -31,19 +31,24 @@ async function fetchCategoriesAndSuppliers() {
 }
 
 // Fetch & hiển thị danh sách thuốc
-function fetchMedicines() {
-    fetch(API_URL)
+function fetchMedicines(page = 0, size = 5) {
+
+    fetch(`${API_URL}?page=${page}&size=${size}`)
         .then(response => response.json())
         .then(data => {
             const tableBody = document.getElementById("medicineTable");
             tableBody.innerHTML = "";
-            data.forEach((medicine, index) => {
+
+            const medicines = data.medicines;
+            const totalPages = data.totalPages;
+
+            medicines.forEach((medicine, index) => {
                 let row = document.createElement("tr");
                 row.innerHTML = `
-                    <td>${index + 1}</td>
+                    <td>${index + 1 + (page * size)}</td>
                     <td>${medicine.name}</td>
                     <td>
-                        <img src="${medicine.image}" width="150" alt="$${medicine.image}" onerror="this.onerror=null;this.src='default.jpg';">
+                        <img src="${medicine.image}" width="150" alt="${medicine.image}" onerror="this.onerror=null;this.src='default.jpg';">
                     </td>
                     <td>${medicine.price}</td>
                     <td>
@@ -54,9 +59,12 @@ function fetchMedicines() {
                 `;
                 tableBody.appendChild(row);
             });
+
+            displayPagination(page, totalPages);
         })
         .catch(error => console.error("Error fetching medicines:", error));
 }
+
 
 function viewMedicine(medicine) {
     document.getElementById("medicineImage").src = medicine.image;
@@ -465,26 +473,27 @@ function showAlert() {
     }, 3000);
 }
 
-async function fetchProducts() {
+
+async function fetchProducts(page = 0, size= 4) {
     try {
-        const response = await fetch(API_URL);
-        const medicine = await response.json();
+        const response = await fetch(`${API_URL}?page=${page}&size=${size}`);
+        const data = await response.json();
+
         const medicineContainer = document.getElementById('medicineContainers');
+        medicineContainer.innerHTML = "";
 
-        // Lấy 4 sản phẩm đầu tiên từ danh sách
-        const limitedProducts = medicine.slice(0, 4);
+        const medicines = data.medicines;
+        const totalPages = data.totalPages;
 
-        medicine.forEach((medicine) => {
+        medicines.forEach((medicine) => {
             const medicineCard = document.createElement('div');
             medicineCard.classList.add('col-lg-4', 'col-md-12', 'mb-4');
 
-            // Định dạng giá bằng JavaScript
             const formattedPrice = new Intl.NumberFormat('vi-VN', {
                 style: 'currency',
                 currency: 'VND'
             }).format(medicine.price);
 
-            // Rút gọn tên sản phẩm nếu cần
             const truncatedName = medicine.name.length > 20 ? medicine.name.substring(0, 20) + '...' : medicine.name;
 
             medicineCard.innerHTML = `
@@ -511,10 +520,14 @@ async function fetchProducts() {
 
             medicineContainer.appendChild(medicineCard);
         });
+
+        displayPagination(page, totalPages);
+
     } catch (error) {
         console.error('Error fetching products:', error);
     }
 }
+
 
 
 // Gọi API khi tải trang danh sách thuốc

@@ -16,6 +16,7 @@ public class Article extends AbstractEntity<Integer>{
 
     private String title;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     private String image;
