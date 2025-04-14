@@ -8,7 +8,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/articles")
@@ -61,5 +68,30 @@ public class ArticleController {
         articleService.deleteArticle(id);
         return ResponseEntity.ok("Article deleted successfully");
     }
+
+    @PostMapping("/ckfinder/connector")
+    public ResponseEntity<Map<String, Object>> uploadImage(@RequestParam("upload") MultipartFile file) {
+        try {
+            String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            Path uploadPath = Paths.get("src/main/resources/static/uploads/");
+            if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
+            Path filePath = uploadPath.resolve(filename);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("uploaded", 1);
+            response.put("fileName", filename);
+            response.put("url", "/uploads/" + filename);
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of(
+                    "uploaded", 0,
+                    "error", Map.of("message", "Lỗi upload ảnh.")
+            ));
+        }
+    }
+
+
 }
 

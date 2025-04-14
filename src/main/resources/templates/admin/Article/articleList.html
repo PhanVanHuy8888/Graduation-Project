@@ -57,8 +57,8 @@
   <!-- page-body-wrapper ends -->
   <!-- Add Article Modal -->
   <div class="modal fade" id="addArticleModal" tabindex="-1" role="dialog" aria-labelledby="addArticleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
+    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="addArticleModalLabel">Add New Article</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -74,7 +74,7 @@
             <div class="form-group">
               <label for="description">Description</label>
               <!-- CKEditor for description -->
-              <textarea class="form-control" id="description" required></textarea>
+              <textarea class="form-control" id="description" ></textarea>
             </div>
             <div class="form-group">
               <label for="image">Image</label>
@@ -106,7 +106,7 @@
             <div class="form-group">
               <label for="update-description">Mô tả</label>
               <!-- CKEditor for description -->
-              <textarea class="form-control" id="update-description" required></textarea>
+              <textarea class="form-control" id="update-description"></textarea>
             </div>
             <div class="form-group">
               <label for="update-image">Chọn ảnh (Tùy chọn)</label>
@@ -144,115 +144,8 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<script>
-  // Fetch and display the articles
-  function fetchArticles() {
-    fetch('/api/articles')
-            .then(response => response.json())
-            .then(data => {
-              const articleList = document.getElementById('article-list');
-              articleList.innerHTML = ''; // Clear existing content
+<script src="/js/article.js"></script>
 
-              data.forEach((article, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                            <td>${index + 1}</td>
-                            <td><img src="${article.image}" alt="${article.title}" style="width: 50px; height: auto;"></td>
-                            <td>${article.title}</td>
-                            <td>${article.description}</td>
-                            <td>
-                                <button class="btn btn-warning btn-sm" onclick="showUpdateModal(${article.id}, '${article.title}', '${article.description}')">Update</button>
-                                <button class="btn btn-danger btn-sm" onclick="showDeleteModal(${article.id})">Delete</button>
-                            </td>
-                        `;
-                articleList.appendChild(row);
-              });
-            });
-  }
 
-  // Show the Add New Article Modal
-  document.getElementById('add-article-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    addNewArticle();
-  });
-
-  // Add new article
-  function addNewArticle() {
-    const title = document.getElementById('title').value;
-    const description = document.getElementById('description').value;
-    const image = document.getElementById('image').files[0];
-
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('description', description);
-    formData.append('image', image);
-
-    fetch('/api/articles', {
-      method: 'POST',
-      body: formData
-    })
-            .then(response => response.json())
-            .then(() => {
-              fetchArticles();
-              $('#addArticleModal').modal('hide');
-            });
-  }
-
-  // Show the Update Modal with article details
-  function showUpdateModal(id, title, description) {
-    $('#update-title').val(title);
-    $('#update-description').val(description);
-    $('#update-article-form').off('submit').on('submit', function(event) {
-      event.preventDefault();
-      updateArticle(id);
-    });
-    $('#updateArticleModal').modal('show');
-  }
-
-  // Update article
-  function updateArticle(id) {
-    const title = $('#update-title').val();
-    const description = $('#update-description').val();
-    const image = $('#update-image')[0].files[0];
-
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('description', description);
-    if (image) formData.append('image', image);
-
-    fetch(`/api/articles/${id}`, {
-      method: 'PUT',
-      body: formData // This automatically sets the Content-Type to multipart/form-data
-    })
-            .then(response => response.json())
-            .then(() => {
-              fetchArticles();
-              $('#updateArticleModal').modal('hide');
-            })
-            .catch(error => console.error("Error during update:", error));
-  }
-
-  // Show Delete Confirmation Modal
-  function showDeleteModal(id) {
-    $('#confirm-delete').off('click').on('click', function() {
-      deleteArticle(id);
-    });
-    $('#deleteArticleModal').modal('show');
-  }
-
-  // Delete article
-  function deleteArticle(id) {
-    fetch(`/api/articles/${id}`, {
-      method: 'DELETE'
-    })
-            .then(() => {
-              fetchArticles();
-              $('#deleteArticleModal').modal('hide');
-            });
-  }
-
-  // Fetch articles on page load
-  document.addEventListener('DOMContentLoaded', fetchArticles);
-</script>
 </body>
 </html>

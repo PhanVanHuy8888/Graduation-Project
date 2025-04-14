@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <!-- Basic -->
     <meta charset="utf-8" />
@@ -74,7 +73,7 @@
                                     <img src="${article.image}" alt="${article.title}" class="img-fluid">
                                 </div>
                                 <h5 class="card-title">${article.title}</h5>
-                                <p class="card-text">${article.description}</p>
+                                <p class="card-text" >${article.description.length > 10 ? article.description.substring(0, 10) + '...' : article.description}</p>
                                 <!-- Button will call function to show details -->
                                 <button class="btn btn-primary mt-2" onclick="showArticleDetail(${article.id})">Read More</button>
                             </div>
