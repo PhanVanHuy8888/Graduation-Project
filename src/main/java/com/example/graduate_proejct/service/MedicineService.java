@@ -77,6 +77,10 @@ public class MedicineService {
         return medicineRepository.findAll(pageable);
     }
 
+    public List<Medicine> getMede() {
+        return medicineRepository.findAll();
+    }
+
     public Medicine updateMedicine(Integer id, MedicineRequest medicineRequest, MultipartFile imageFile) throws IOException {
         Medicine medicine = getMedicineById(id);
 

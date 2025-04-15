@@ -52,6 +52,58 @@ async function fetchMedicines(categoryId = null, page = 0) {
 }
 
 
+async function addToCart(medicineName, price, quantity = 1) {
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    let userId = localStorage.getItem("userId");
+    if (!userId) {
+        alert("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+        window.location.href = "/signin"; // Redirect người dùng đến trang đăng nhập
+        return;
+    }
+
+    // Fetch thông tin sản phẩm để kiểm tra số lượng
+    const response = await fetch(API_URL);
+    const medicines = await response.json();
+    const medicine = medicines.find(med => med.name === medicineName);
+
+    // Nếu sản phẩm hết hàng, hiển thị thông báo và thoát hàm
+    if (medicine && medicine.quantity === 0) {
+        alert("Sản phẩm hết hàng!");
+        return;
+    }
+
+    // Kiểm tra nếu trên trang chi tiết sản phẩm, lấy số lượng từ input
+    const quantityInput = document.getElementById("inputQuantity");
+    if (quantityInput) {
+        quantity = parseInt(quantityInput.value) || 1;
+    }
+
+    console.log("Adding to cart:", { userId, medicineName, price, quantity });
+
+    const cartItem = {
+        medicineName: medicineName,
+        price: price,
+        quantity: quantity
+    };
+
+    // Gửi yêu cầu API để lưu vào giỏ hàng của người dùng
+    try {
+        const response = await fetch(CART_API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId, ...cartItem })
+        });
+
+        const result = await response.json();
+        console.log("Response:", result);
+        alert(result.message);
+    } catch (error) {
+        console.error("Error adding to cart:", error);
+        alert("Lỗi khi thêm vào giỏ hàng!");
+    }
+}
+
+
 async function fetchCategories() {
     try {
         const response = await fetch(API_CATEGORY);
@@ -141,6 +193,3 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Hàm thêm sản phẩm vào giỏ hàng (demo)
-function addToCart(name, price) {
-    alert(`Đã thêm "${name}" - Giá: ${price} vào giỏ hàng (demo)!`);
-}

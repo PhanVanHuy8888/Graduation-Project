@@ -171,6 +171,11 @@
     window.onload = function () {
         fetchCategory();
     };
+
+    function logout() {
+        // Xóa userId khỏi localStorage
+        localStorage.removeItem("userId");
+    }
 </script>
 </body>
 

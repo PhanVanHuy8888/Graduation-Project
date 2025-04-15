@@ -100,7 +100,7 @@ async function fetchUserData() {
             document.getElementById('address').value = data.address || '';
 
             // Lưu userId vào localStorage để dùng cho giỏ hàng
-            // localStorage.setItem('userId', data.id);
+            localStorage.setItem('userId', data.id);
         }
     } catch (error) {
         console.error('Lỗi tải dữ liệu khách hàng:', error);

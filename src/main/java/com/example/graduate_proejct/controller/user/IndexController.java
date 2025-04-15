@@ -49,32 +49,117 @@ public class IndexController {
     }
 
     @GetMapping("/cart")
-    public String Cart() {
+    public String Cart(Model model) {
+        model.addAttribute("isAuthenticated", false); // Giá trị mặc định
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
+            String username = authentication.getName();
+
+            // Kiểm tra người dùng có trong database không
+            User user = userRepository.findByEmail(username)
+                    .orElse(null);
+
+            if (user != null) {
+                model.addAttribute("username", username);
+                model.addAttribute("userId", user.getId());
+                model.addAttribute("isAuthenticated", true); // Cập nhật lại giá trị
+                System.out.println(user.getId());
+            }
+        }
         return "views/cart";
     }
 
     @GetMapping("/medicine")
-    public String Medicine() {
+    public String Medicine(Model model) {
+        model.addAttribute("isAuthenticated", false); // Giá trị mặc định
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
+            String username = authentication.getName();
+
+            // Kiểm tra người dùng có trong database không
+            User user = userRepository.findByEmail(username)
+                    .orElse(null);
+
+            if (user != null) {
+                model.addAttribute("username", username);
+                model.addAttribute("userId", user.getId());
+                model.addAttribute("isAuthenticated", true); // Cập nhật lại giá trị
+                System.out.println(user.getId());
+            }
+        }
         return "views/medicine";
     }
 
     @GetMapping("/contact")
-    public String Contact() {
+    public String Contact(Model model) {
+        model.addAttribute("isAuthenticated", false); // Giá trị mặc định
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
+            String username = authentication.getName();
+
+            // Kiểm tra người dùng có trong database không
+            User user = userRepository.findByEmail(username)
+                    .orElse(null);
+
+            if (user != null) {
+                model.addAttribute("username", username);
+                model.addAttribute("userId", user.getId());
+                model.addAttribute("isAuthenticated", true); // Cập nhật lại giá trị
+                System.out.println(user.getId());
+            }
+        }
         return "views/contact";
     }
 
     @GetMapping("/article")
-    public String Article() {
+    public String Article(Model model) {
+        model.addAttribute("isAuthenticated", false); // Giá trị mặc định
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
+            String username = authentication.getName();
+
+            // Kiểm tra người dùng có trong database không
+            User user = userRepository.findByEmail(username)
+                    .orElse(null);
+
+            if (user != null) {
+                model.addAttribute("username", username);
+                model.addAttribute("userId", user.getId());
+                model.addAttribute("isAuthenticated", true); // Cập nhật lại giá trị
+                System.out.println(user.getId());
+            }
+        }
         return "views/article";
     }
 
-    @GetMapping("/edit-article")
+    @GetMapping("/detail-article")
     public String editArticle() {
         return "views/articleDetail";
     }
 
     @GetMapping("/detail-medicine")
-    public String detailMedicine() {
+    public String detailMedicine(Model model) {
+        model.addAttribute("isAuthenticated", false); // Giá trị mặc định
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
+            String username = authentication.getName();
+
+            // Kiểm tra người dùng có trong database không
+            User user = userRepository.findByEmail(username)
+                    .orElse(null);
+
+            if (user != null) {
+                model.addAttribute("username", username);
+                model.addAttribute("userId", user.getId());
+                model.addAttribute("isAuthenticated", true); // Cập nhật lại giá trị
+                System.out.println(user.getId());
+            }
+        }
         return "views/detailMedicine";
     }
 
