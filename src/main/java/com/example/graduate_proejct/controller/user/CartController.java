@@ -42,4 +42,12 @@ public class CartController {
         cartService.clearCart(userId);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/update-quantity/{id}")
+    public ResponseEntity<?> updateCartItemQuantity(@PathVariable Integer id, @RequestBody Map<String, Integer> body) {
+        int newQuantity = body.get("quantity");
+        cartService.updateQuantity(id, newQuantity);
+        return ResponseEntity.ok().build();
+    }
+
 }

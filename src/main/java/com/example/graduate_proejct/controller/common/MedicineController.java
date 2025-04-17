@@ -39,10 +39,10 @@ public class MedicineController {
         return ResponseEntity.ok(medicineService.getMedicineById(id));
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<Medicine>> getAllMedicines() {
-//        return ResponseEntity.ok(medicineService.getAllMedicines());
-//    }
+    @GetMapping("/getMede")
+    public ResponseEntity<List<Medicine>> getMede() {
+        return ResponseEntity.ok(medicineService.getMede());
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Medicine> updateMedicine(
@@ -64,7 +64,7 @@ public class MedicineController {
     @GetMapping
     public ResponseEntity<Map<String, Object>> getMedicines(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "1") int size,
+            @RequestParam(defaultValue = "10") int size,
             @RequestParam(value = "categoryId", required = false) Integer categoryId) {
 
         Page<Medicine> medicinePage;

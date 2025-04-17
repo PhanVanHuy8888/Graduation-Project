@@ -137,7 +137,24 @@ public class IndexController {
     }
 
     @GetMapping("/detail-article")
-    public String editArticle() {
+    public String editArticle(Model model) {
+        model.addAttribute("isAuthenticated", false); // Giá trị mặc định
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
+            String username = authentication.getName();
+
+            // Kiểm tra người dùng có trong database không
+            User user = userRepository.findByEmail(username)
+                    .orElse(null);
+
+            if (user != null) {
+                model.addAttribute("username", username);
+                model.addAttribute("userId", user.getId());
+                model.addAttribute("isAuthenticated", true); // Cập nhật lại giá trị
+                System.out.println(user.getId());
+            }
+        }
         return "views/articleDetail";
     }
 

@@ -67,4 +67,12 @@ public class CartService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         cartRepository.deleteAll(cartRepository.findByUser(user));
     }
+
+    public void updateQuantity(Integer cartItemId, int newQuantity) {
+        Cart item = cartRepository.findById(cartItemId)
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+        item.setQuantity(newQuantity);
+        cartRepository.save(item);
+    }
+
 }

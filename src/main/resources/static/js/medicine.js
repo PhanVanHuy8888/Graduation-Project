@@ -565,6 +565,7 @@ async function fetchProducts(page = 0, size= 4) {
 
 
 
+
 // Gọi API khi tải trang danh sách thuốc
 document.addEventListener("DOMContentLoaded", () => {
     const path = window.location.pathname;

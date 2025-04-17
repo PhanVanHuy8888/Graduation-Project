@@ -30,6 +30,29 @@
             color: #5cb02b;
             text-decoration: none;
         }
+
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            cursor: pointer;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card h6 {
+            font-size: 2.5rem;
+            color: #7f8c8d;
+            margin-top: 0.5rem;
+        }
+
     </style>
 </head>
 <body>
@@ -57,13 +80,8 @@
                                             <h3 class="mb-0">Đơn hàng</h3>
                                         </div>
                                     </div>
-                                    <div class="col-3">
-                                        <div class="icon icon-box-success ">
-                                            <span class="mdi mdi-arrow-top-right icon-item"></span>
-                                        </div>
-                                    </div>
                                 </div>
-                                <h6 class="text-muted font-weight-normal">Potential growth</h6>
+                                <h6 id="totalOrders" class="text-muted font-weight-normal"></h6>
                             </div>
                         </div>
                     </div>
@@ -76,13 +94,8 @@
                                             <h3 class="mb-0">Tổng sản phẩm</h3>
                                         </div>
                                     </div>
-                                    <div class="col-3">
-                                        <div class="icon icon-box-success">
-                                            <span class="mdi mdi-arrow-top-right icon-item"></span>
-                                        </div>
-                                    </div>
                                 </div>
-                                <h6 class="text-muted font-weight-normal">Revenue current</h6>
+                                <h6 id="totalProducts" class="text-muted font-weight-normal"></h6>
                             </div>
                         </div>
                     </div>
@@ -95,17 +108,11 @@
                                             <h3 class="mb-0">Doanh thu</h3>
                                         </div>
                                     </div>
-                                    <div class="col-3">
-                                        <div class="icon icon-box-success">
-                                            <span class="mdi mdi-arrow-top-right icon-item"></span>
-                                        </div>
-                                    </div>
                                 </div>
-                                <h6 class="text-muted font-weight-normal">Revenue current</h6>
+                                <h6 id="totalRevenue" class="text-muted font-weight-normal"></h6>
                             </div>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="row ">
@@ -117,129 +124,23 @@
                                     <table class="table">
                                         <thead>
                                         <tr>
-                                            <th>
-                                                <div class="form-check form-check-muted m-0">
-                                                    <label class="form-check-label">
-                                                        <input type="checkbox" class="form-check-input">
-                                                    </label>
-                                                </div>
-                                            </th>
-                                            <th> Client Name</th>
-                                            <th> Order No</th>
-                                            <th> Product Cost</th>
-                                            <th> Project</th>
-                                            <th> Payment Mode</th>
-                                            <th> Start Date</th>
-                                            <th> Payment Status</th>
+<!--                                            <th>-->
+<!--                                                <div class="form-check form-check-muted m-0">-->
+<!--                                                    <label class="form-check-label">-->
+<!--                                                        <input type="checkbox" class="form-check-input">-->
+<!--                                                    </label>-->
+<!--                                                </div>-->
+<!--                                            </th>-->
+                                            <th>#</th>
+                                            <th>Order No</th>
+                                            <th>Name</th>
+                                            <th>PayMent</th>
+                                            <th>Start Date</th>
+                                            <th>Payment Status</th>
+                                            <th>Actions</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="form-check form-check-muted m-0">
-                                                    <label class="form-check-label">
-                                                        <input type="checkbox" class="form-check-input">
-                                                    </label>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <img src="assets/images/faces/face1.jpg" alt="image"/>
-                                                <span class="pl-2">Henry Klein</span>
-                                            </td>
-                                            <td> 02312</td>
-                                            <td> $14,500</td>
-                                            <td> Dashboard</td>
-                                            <td> Credit card</td>
-                                            <td> 04 Dec 2019</td>
-                                            <td>
-                                                <div class="badge badge-outline-success">Approved</div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="form-check form-check-muted m-0">
-                                                    <label class="form-check-label">
-                                                        <input type="checkbox" class="form-check-input">
-                                                    </label>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <img src="assets/images/faces/face2.jpg" alt="image"/>
-                                                <span class="pl-2">Estella Bryan</span>
-                                            </td>
-                                            <td> 02312</td>
-                                            <td> $14,500</td>
-                                            <td> Website</td>
-                                            <td> Cash on delivered</td>
-                                            <td> 04 Dec 2019</td>
-                                            <td>
-                                                <div class="badge badge-outline-warning">Pending</div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="form-check form-check-muted m-0">
-                                                    <label class="form-check-label">
-                                                        <input type="checkbox" class="form-check-input">
-                                                    </label>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <img src="assets/images/faces/face5.jpg" alt="image"/>
-                                                <span class="pl-2">Lucy Abbott</span>
-                                            </td>
-                                            <td> 02312</td>
-                                            <td> $14,500</td>
-                                            <td> App design</td>
-                                            <td> Credit card</td>
-                                            <td> 04 Dec 2019</td>
-                                            <td>
-                                                <div class="badge badge-outline-danger">Rejected</div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="form-check form-check-muted m-0">
-                                                    <label class="form-check-label">
-                                                        <input type="checkbox" class="form-check-input">
-                                                    </label>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <img src="assets/images/faces/face3.jpg" alt="image"/>
-                                                <span class="pl-2">Peter Gill</span>
-                                            </td>
-                                            <td> 02312</td>
-                                            <td> $14,500</td>
-                                            <td> Development</td>
-                                            <td> Online Payment</td>
-                                            <td> 04 Dec 2019</td>
-                                            <td>
-                                                <div class="badge badge-outline-success">Approved</div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="form-check form-check-muted m-0">
-                                                    <label class="form-check-label">
-                                                        <input type="checkbox" class="form-check-input">
-                                                    </label>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <img src="assets/images/faces/face4.jpg" alt="image"/>
-                                                <span class="pl-2">Sallie Reyes</span>
-                                            </td>
-                                            <td> 02312</td>
-                                            <td> $14,500</td>
-                                            <td> Website</td>
-                                            <td> Credit card</td>
-                                            <td> 04 Dec 2019</td>
-                                            <td>
-                                                <div class="badge badge-outline-success">Approved</div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
+                                        <tbody id="orderTableBody"></tbody>
                                     </table>
                                 </div>
                             </div>
@@ -282,6 +183,7 @@
 <!-- endinject -->
 <!-- Custom js for this page -->
 <script src="/assets/js/dashboard.js"></script>
+<script src="/js/order.js"></script>
 <!-- End custom js for this page -->
 </body>
 </html>

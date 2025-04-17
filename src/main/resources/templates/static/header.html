@@ -73,7 +73,7 @@
                                         <a th:if="${isAuthenticated == false}" class="dropdown-item" href="signin">Đăng nhập</a>
                                         <a th:if="${isAuthenticated == false}" class="dropdown-item" href="register">Đăng ký</a>
                                         <div class="dropdown-divider"></div>
-                                        <a th:if="${isAuthenticated == true}" onclick="logout()" class="dropdown-item" th:href="@{/logout}">Logout</a>
+                                        <a th:if="${isAuthenticated == true}" onclick="logout()" class="dropdown-item" th:href="@{/logout}">Đăng xuất</a>
                                     </div>
                                 </div>
 

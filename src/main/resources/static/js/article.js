@@ -113,6 +113,8 @@ ClassicEditor.create(document.querySelector('#description'), {
     extraPlugins: [ MyCustomUploadAdapterPlugin ],
     language: 'vi',
     toolbar: [ 'heading', '|', 'bold', 'italic', 'imageUpload', 'undo', 'redo' ]
+}).then(editor => {
+    editorInstance = editor;
 }).catch(error => {
     console.error(error);
 });

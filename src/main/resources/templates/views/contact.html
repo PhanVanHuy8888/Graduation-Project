@@ -15,19 +15,21 @@
     <title>Liên hệ</title>
 
     <!-- slider stylesheet -->
-    <link rel="stylesheet" type="text/css"
-          href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
 
     <!-- bootstrap core css -->
-    <link rel="stylesheet" type="text/css" href="/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.css" />
 
     <!-- fonts style -->
-    <link href="https://fonts.googleapis.com/css?family=Baloo+Chettan|Dosis:400,600,700|Poppins:400,600,700&display=swap"
-          rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Chettan|Dosis:400,600,700|Poppins:400,600,700&display=swap" rel="stylesheet" />
     <!-- Custom styles for this template -->
-    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet" />
     <!-- responsive style -->
-    <link href="/css/responsive.css" rel="stylesheet"/>
+    <link href="/css/responsive.css" rel="stylesheet" />
+    <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+            rel="stylesheet"
+    />
     <style>
         .brand_box {
             position: absolute!important;
@@ -42,56 +44,64 @@
 
 <body class="sub_page">
 <div th:include="static/header :: header"></div>
+<section class="contact_section layout_padding">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="offset-lg-2 col-md-10 offset-md-1">
+                <div class="heading_container">
+                    <hr>
+                    <h2>
+                        Gửi phản hồi
+                    </h2>
+                </div>
+            </div>
+        </div>
 
+        <div class="layout_padding2-top">
+            <div class="row">
+                <div class="col-lg-4 offset-lg-2 col-md-5 offset-md-1">
+                    <form id="contactForm">
+                        <div class="contact_form-container">
+                            <div>
+                                <div>
+                                    <input type="text" placeholder="Full Name" id="fullName" required />
+                                </div>
+                                <div>
+                                    <input type="email" placeholder="Email" id="email" required />
+                                </div>
+                                <div>
+                                    <input type="text" placeholder="Phone Number" id="phoneNumber" required />
+                                </div>
+                                <div>
+                                    <input type="text" class="message_input" placeholder="Message" id="message" required />
+                                </div>
+                                <div>
+                                    <button type="submit">
+                                        Send
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6 px-0">
+                    <div class="map_container">
+                        <div class="map-responsive">
+                            <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA0s1a7phLN0iaD6-UE7m4qP-z21pH0eSc&q=Eiffel+Tower+Paris+France" width="600" height="300" frameborder="0" style="border:0; width: 100%; height:100%" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <div th:include="static/footer :: footer"></div>
 
 <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.js"></script>
 <script type="text/javascript" src="/js/custom.js"></script>
-<script>
-    async function fetchCategory() {
-        console.log("fetchCategory function is called!"); // Log kiểm tra
+<script type="text/javascript" src="/js/contact.js"></script>
 
-        try {
-            const response = await fetch("http://localhost:8080/api/categories");
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log("Fetched categories:", data); // Kiểm tra dữ liệu trả về
-
-            const categoryList = document.getElementById("categoryList");
-            if (!categoryList) {
-                console.error("Element #categoryList not found!");
-                return;
-            }
-
-            categoryList.innerHTML = ""; // Xóa danh sách cũ
-
-            data.forEach(category => {
-                const listItem = document.createElement("li");
-                listItem.classList.add("nav-item");
-
-                listItem.innerHTML = `
-                    <a class="nav-link" href="/${category.url}">
-                        ${category.categoryName}
-                    </a>
-                `;
-
-                categoryList.appendChild(listItem);
-            });
-
-            console.log("Categories rendered successfully!");
-        } catch (error) {
-            console.error("Error fetching categories:", error);
-        }
-    }
-
-    window.onload = function () {
-        fetchCategory();
-    };
-</script>
 </body>
 
 </html>

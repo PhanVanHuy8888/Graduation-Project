@@ -104,5 +104,13 @@ public class OrderService {
     public void deleteOrder(Integer id) {
         orderRepository.deleteById(id);
     }
+
+    public double calculateTotalRevenue() {
+        return orderRepository.sumTotalRevenue();
+    }
+
+    public long countAllOrders() {
+        return orderRepository.count();
+    }
 }
 

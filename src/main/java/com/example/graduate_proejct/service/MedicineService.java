@@ -125,4 +125,8 @@ public class MedicineService {
     public void deleteMedicine(Integer id) {
         medicineRepository.deleteById(id);
     }
+
+    public long countAllProducts() {
+        return medicineRepository.count();
+    }
 }

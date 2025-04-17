@@ -249,3 +249,18 @@
     }
     });
 })(jQuery);
+
+async function loadDashboard() {
+  try {
+    const response = await fetch("/api/dashboard");
+    const data = await response.json();
+
+    document.getElementById("totalOrders").innerText = data.totalOrders;
+    document.getElementById("totalProducts").innerText = data.totalProducts;
+    document.getElementById("totalRevenue").innerText = data.totalRevenue.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+  } catch (error) {
+    console.error("Error loading dashboard:", error);
+  }
+}
+
+window.onload = loadDashboard;
