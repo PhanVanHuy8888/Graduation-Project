@@ -8,6 +8,7 @@ import com.example.graduate_proejct.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -24,7 +25,7 @@ public class RoleService {
     }
 
     public RoleResponse updateRole(String name, RoleRequest request) {
-        Role role = roleRepo.findById(name).orElseThrow(() -> new RuntimeException("Role not found by name = " + name));
+        Role role = roleRepo.findByName(name).orElseThrow(() -> new RuntimeException("Role not found by name = " + name));
         roleMapper.updateRole(role, request);
         return roleMapper.toRoleResponse(roleRepo.save(role));
     }
@@ -38,7 +39,7 @@ public class RoleService {
     }
 
 
-    public void deleteRole(String name) {
-        roleRepo.deleteById(name);
+    public void deleteRole(String id) {
+        roleRepo.deleteById(id);
     }
 }

@@ -35,15 +35,17 @@
             <div th:replace="admin/aside :: header"></div>
         </nav>
 
-        <div class="main-panel">
-            <h1 class="text-center">Category Medicine List</h1>
-            <a href="/add-cate-medicine" class="btn btn-success mb-3">Add New Category</a>
+        <div class="mt-3 main-panel">
+            <h2 class="text-center">Danh sánh loại thuốc</h2>
+            <div class="d-flex justify-content-start mb-3">
+                <a href="/add-cate-medicine" class="btn btn-success btn-lg px-4">Tạo mới loại thuốc</a>
+            </div>
             <table class="table table-bordered">
                 <thead class="table-dark">
                 <tr>
                     <th>#</th>
-                    <th>Category Name</th>
-                    <th>Actions</th>
+                    <th>Tên loại thuốc</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody id="categoryTable"></tbody>

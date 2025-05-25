@@ -35,9 +35,9 @@ public class RoleController {
         return roleService.updateRole(name, request);
     }
 
-    @DeleteMapping("/{name}")
-    public String deleteRole(@PathVariable String name) {
-        roleService.deleteRole(name);
+    @DeleteMapping("/{id}")
+    public String deleteRole(@PathVariable String id) {
+        roleService.deleteRole(id);
         return "Role has been deleted";
     }
 }

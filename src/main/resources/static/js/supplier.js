@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api/supplier";
+const API_URL = "/api/supplier";
 
 // Fetch danh sách supplier
 function fetchSupplier() {
@@ -15,8 +15,8 @@ function fetchSupplier() {
                     <td>${supplier.address}</td>
                     <td>${supplier.phoneNumber}</td>
                     <td>
-                        <a class="btn btn-warning" href="edit-supplier?id=${supplier.id}">Edit</a>
-                        <button class="btn btn-danger" onclick="deleteSupplier(${supplier.id})">Delete</button>
+                        <a class="btn btn-warning" href="edit-supplier?id=${supplier.id}">Sửa</a>
+                        <button class="btn btn-danger" onclick="deleteSupplier(${supplier.id})">Xoá</button>
                     </td>
                 `;
                 tableBody.appendChild(row);

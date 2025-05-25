@@ -1,47 +1,58 @@
-const USER_API = "http://localhost:8080/api/users/getUser";
-const CART_API = "http://localhost:8080/api/cart";
-const ORDER_API = "http://localhost:8080/api/order";
-
+const USER_API = "/api/users/getUser";
+const CART_API = "/api/cart";
+const ORDER_API = "/api/order";
 
 document.addEventListener("DOMContentLoaded", function () {
-    fetchUserData(); // Lấy thông tin user
+    fetchUserData();
     fetchCart();
     fetchOrders();
 });
 
-function fetchOrders() {
-    fetch(ORDER_API)
+function fetchOrders(page = 0) {
+    currentPage = page;
+    fetch(`${ORDER_API}?page=${page}&size=8`)
         .then(response => response.json())
         .then(data => {
             const tableBody = document.getElementById("orderTableBody");
-            tableBody.innerHTML = ""; // Xóa dữ liệu cũ
+            tableBody.innerHTML = "";
 
-            data.forEach((order, index) => {
+            data.content.forEach((order, index) => {
                 let row = `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${order.orderCode}</td>
-                            <td>${order.userName}</td>
-                            <td>${order.payment}</td>
-                            <td>${order.createdAt}</td>
-                            <td class="${order.paymentStatus === 'Đang xử lý' ? 'text-success' : 'text-danger'}">
-                                ${order.paymentStatus}
-                            </td>
-                            <td>
-                                <a class="badge badge-outline-info" href="#" onclick='viewOrder(${JSON.stringify(order)})'>View</a>
-                            </td>
-                        </tr>
-                    `;
+                    <tr>
+                        <td>${index + 1 + page * 8}</td>
+                        <td>${order.orderCode}</td>
+                        <td>${order.userName}</td>
+                        <td>${order.payment}</td>
+                        <td>${order.createdAt}</td>
+                        <td class="${order.paymentStatus === 'Đang xử lý' ? 'text-danger' : 'text-success'}">
+                            ${order.paymentStatus}
+                        </td>
+                        <td>
+                            <a class="badge badge-outline-info" href="#" onclick='viewOrder(${JSON.stringify(order)})'>Xem</a>
+                        </td>
+                    </tr>
+                `;
                 tableBody.innerHTML += row;
             });
+
+            renderPagination(data.totalPages);
         })
         .catch(error => console.error("Lỗi khi lấy đơn hàng:", error));
 }
 
-function viewOrder(order) {
-    console.log(order); // Kiểm tra dữ liệu đầu vào
-    console.log(order.orderDetails); // Kiểm tra dữ liệu đầu vào
+function renderPagination(totalPages) {
+    const paginationContainer = document.getElementById("pagination");
+    paginationContainer.innerHTML = "";
 
+    for (let i = 0; i < totalPages; i++) {
+        paginationContainer.innerHTML += `
+            <button class="btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-outline-primary'}"
+                    onclick="fetchOrders(${i})">${i + 1}</button>
+        `;
+    }
+}
+
+function viewOrder(order) {
     document.getElementById("orderCode").textContent = order.orderCode || "N/A";
     document.getElementById("orderEmail").textContent = order.email || "N/A";
     document.getElementById("orderPhone").textContent = order.phone || "N/A";
@@ -49,14 +60,12 @@ function viewOrder(order) {
     document.getElementById("orderNote").textContent = order.note || "N/A";
     document.getElementById("orderCreateAt").textContent = order.createdAt || "N/A";
 
-    // Hiển thị danh sách thuốc trong đơn hàng
     const orderDetailsTable = document.getElementById("orderDetailsTable");
     orderDetailsTable.innerHTML = "";
 
-    let totalAmount = 0; // Khởi tạo biến tổng tiền
+    let totalAmount = 0;
 
     if (!order.orderDetails || !Array.isArray(order.orderDetails)) {
-        console.error("orderDetails không hợp lệ:", order.orderDetails);
         orderDetailsTable.innerHTML = "<tr><td colspan='4' class='text-center'>Không có sản phẩm nào</td></tr>";
     } else {
         order.orderDetails.forEach(detail => {
@@ -68,13 +77,10 @@ function viewOrder(order) {
                 <td>${detail.total || 0} VND</td>
             `;
             orderDetailsTable.appendChild(row);
-
-            // Tính tổng tiền cho mỗi đơn hàng
             totalAmount += detail.total || 0;
         });
     }
 
-    // Thêm hàng tổng tiền vào bảng
     const totalRow = document.createElement("tr");
     totalRow.innerHTML = `
         <td colspan="3" class="text-right"><strong>Tổng tiền</strong></td>
@@ -82,60 +88,63 @@ function viewOrder(order) {
     `;
     orderDetailsTable.appendChild(totalRow);
 
-    // Hiển thị modal
     let modal = new bootstrap.Modal(document.getElementById("orderModal"));
     modal.show();
 }
 
-
-
-// Lấy dữ liệu người dùng
 async function fetchUserData() {
     try {
-        const response = await fetch(USER_API);
-        const data = await response.json();
-        if (data) {
-            document.getElementById('email').value = data.email || '';
-            document.getElementById('phone').value = data.phone || '';
-            document.getElementById('address').value = data.address || '';
-
-            // Lưu userId vào localStorage để dùng cho giỏ hàng
-            localStorage.setItem('userId', data.id);
+        const userId = localStorage.getItem('userId');
+        if(userId) {
+            const response = await fetch(USER_API);
+            const data = await response.json();
+            if (data && data.id) {
+                document.getElementById('username').value = data.userName || '';
+                document.getElementById('email').value = data.email || '';
+                document.getElementById('phone').value = data.phone || '';
+                document.getElementById('address').value = data.address || '';
+                localStorage.setItem('userId', data.id);
+            } else {
+                localStorage.removeItem('userId');
+            }
         }
     } catch (error) {
         console.error('Lỗi tải dữ liệu khách hàng:', error);
+        localStorage.removeItem('userId');
     }
 }
 
-// Lấy dữ liệu giỏ hàng
 async function fetchCart() {
     try {
-        const userId = localStorage.getItem('userId'); // Lấy userId từ localStorage
-        if (!userId) {
-            console.error("User ID không tồn tại.");
-            return;
-        }
-
-        const response = await fetch(`${CART_API}/${userId}`);
-
-        if (!response.ok) {
-            throw new Error(`Lỗi API: ${response.status} - ${response.statusText}`);
-        }
-
-        const cart = await response.json();
-
-        console.log("Dữ liệu giỏ hàng từ API:", cart); // Kiểm tra dữ liệu
-
-        if (!Array.isArray(cart)) {
-            console.error("Dữ liệu giỏ hàng không phải mảng:", cart);
-            document.getElementById('cartList').innerHTML = `
-                <li class='list-group-item text-center text-danger'>Lỗi dữ liệu giỏ hàng</li>`;
-            return;
-        }
-
         const cartList = document.getElementById('cartList');
+        let cart = [];
         let totalSum = 0;
         const orderDetails = [];
+
+        const userId = localStorage.getItem('userId');
+        const isLoggedIn = userId && userId !== "undefined";
+
+        if (isLoggedIn) {
+            const response = await fetch(`${CART_API}/${userId}`);
+            if (!response.ok) {
+                throw new Error(`Lỗi API: ${response.status} - ${response.statusText}`);
+            }
+            cart = await response.json();
+        } else {
+            const guestCart = localStorage.getItem('guestCart');
+            if (!guestCart) {
+                cartList.innerHTML = `<li class='list-group-item text-center text-muted'>Giỏ hàng trống</li>`;
+                document.getElementById('totalAmount').textContent = 0;
+                return;
+            }
+            cart = JSON.parse(guestCart);
+        }
+
+        if (!Array.isArray(cart) || cart.length === 0) {
+            cartList.innerHTML = `<li class='list-group-item text-center text-muted'>Giỏ hàng trống</li>`;
+            document.getElementById('totalAmount').textContent = 0;
+            return;
+        }
 
         cartList.innerHTML = '';
         cart.forEach((item) => {
@@ -151,18 +160,19 @@ async function fetchCart() {
             orderDetails.push({ medicineName: item.medicineName, quantity: item.quantity, price: item.price });
         });
 
-        cartList.innerHTML += `<li class='list-group-item d-flex justify-content-between'><strong>Tổng tiền</strong><strong>${totalSum} VND</strong></li>`;
+        cartList.innerHTML += `
+            <li class='list-group-item d-flex justify-content-between'>
+                <strong>Tổng tiền</strong>
+                <strong>${totalSum} VND</strong>
+            </li>`;
         document.getElementById('totalAmount').textContent = totalSum;
+
         localStorage.setItem('orderDetails', JSON.stringify(orderDetails));
     } catch (error) {
         console.error('Lỗi tải giỏ hàng:', error);
-        document.getElementById('cartList').innerHTML = `
-            <li class='list-group-item text-center text-danger'>Không thể tải giỏ hàng</li>`;
+        document.getElementById('cartList').innerHTML = `<li class='list-group-item text-center text-danger'>Không thể tải giỏ hàng</li>`;
     }
 }
-
-
-// Xử lý thanh toán
 async function createOrder(event) {
     event.preventDefault();
 
@@ -171,19 +181,42 @@ async function createOrder(event) {
     const address = document.getElementById('address').value;
     const note = document.getElementById('note').value;
     const payment = document.querySelector('input[name="paymentMethod"]:checked').value;
-    const userId = localStorage.getItem('userId'); // Lấy userId từ localStorage
+    const username = document.getElementById('username') ? document.getElementById('username').value : null;
+    const userId = localStorage.getItem('userId');
+    const isLoggedIn = userId && userId !== "undefined";
 
-    if (!userId) {
-        alert("Không tìm thấy thông tin người dùng.");
-        return;
-    }
+    let cart = [];
+    let totalSum = 0;
 
     try {
-        const cartResponse = await fetch(`${CART_API}/${userId}`);
-        const cart = await cartResponse.json();
-        let totalSum = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        if (isLoggedIn) {
+            const cartResponse = await fetch(`${CART_API}/${userId}`);
+            cart = await cartResponse.json();
+        } else {
+            const guestCart = localStorage.getItem('guestCart');
+            if (guestCart) {
+                cart = JSON.parse(guestCart);
+            }
+        }
 
-        const orderRequest = { email, phone, address, note, price: totalSum, payment, userId, orderDetails: cart };
+        if (!Array.isArray(cart) || cart.length === 0) {
+            alert("Giỏ hàng trống!");
+            return;
+        }
+
+        totalSum = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+        const orderRequest = {
+            email,
+            phone,
+            address,
+            note,
+            price: totalSum,
+            payment,
+            userId: isLoggedIn ? userId : null,
+            username: !isLoggedIn ? username : null,
+            orderDetails: cart
+        };
 
         const response = await fetch(ORDER_API, {
             method: 'POST',
@@ -191,14 +224,29 @@ async function createOrder(event) {
             body: JSON.stringify(orderRequest)
         });
 
+        const result = await response.json();
+        const orderId = result.id;
+
         if (response.ok) {
-            window.location.href = 'success';
+            if (!isLoggedIn) {
+                localStorage.removeItem('guestCart');
+            }
+
+            // Chuyển hướng tùy theo phương thức thanh toán
+            if (payment === "ONLINE") {
+                // Chuyển sang trang thanh toán demo kèm theo số tiền
+                window.location.href = `payment?orderId=${orderId}&price=${totalSum}`;
+            } else {
+                window.location.href = 'success.html';
+            }
+
         } else {
-            alert("Lỗi khi tạo đơn hàng");
+            alert("Lỗi khi tạo đơn hàng.");
         }
+
     } catch (error) {
         console.error('Lỗi tạo đơn hàng:', error);
+        alert("Có lỗi xảy ra khi tạo đơn hàng.");
     }
 }
-
 

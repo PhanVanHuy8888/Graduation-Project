@@ -31,6 +31,23 @@
             background-color: #f8f9fa;
             padding: 5px;
         }
+        .select-sort {
+            border: 1px solid #ccc;
+            height: 50px;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        .select-sort:focus {
+            outline: none;
+            box-shadow: none;
+            border-color: #ccc;
+        }
+
+        .select-sort option:focus {
+            outline: none;
+        }
+
     </style>
 </head>
 <body>
@@ -46,6 +63,16 @@
             <ul id="categoryMedicineList" class="list-group">
                 <!-- Danh mục thuốc sẽ được thêm vào đây -->
             </ul>
+            <div class="mb-3">
+                <label for="sortSelect" class="form-label fw-bold d-block mt-4 mb-2">
+                    <h5>Sắp xếp theo giá</h5>
+                </label>
+                <select id="sortSelect" class="form-select w-100 select-sort" onchange="handleSortChange()">
+                    <option value="">-- Chọn sắp xếp --</option>
+                    <option value="asc">Giá tăng dần</option>
+                    <option value="desc">Giá giảm dần</option>
+                </select>
+            </div>
         </div>
 
         <!-- Sản phẩm -->

@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,15 +64,14 @@ public class MedicineController {
     public ResponseEntity<Map<String, Object>> getMedicines(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(value = "categoryId", required = false) Integer categoryId) {
+            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+            @RequestParam(value = "sort", required = false) String sortDirection) {
 
         Page<Medicine> medicinePage;
-        Pageable pageable = PageRequest.of(page, size);
-
         if (categoryId != null) {
-            medicinePage = medicineService.getMedicinesByCate(categoryId, pageable);
+            medicinePage = medicineService.getMedicinesByCate(categoryId, page, size, sortDirection);
         } else {
-            medicinePage = medicineService.getAllMedicines(pageable);
+            medicinePage = medicineService.getAllMedicines(page, size, sortDirection);
         }
 
         Map<String, Object> response = new HashMap<>();
@@ -83,6 +81,24 @@ public class MedicineController {
         response.put("totalPages", medicinePage.getTotalPages());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> searchMedicines(
+            @RequestParam String keyword,
+            @RequestParam int page,
+            @RequestParam int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Medicine> pageResult = medicineService.searchMedicine(keyword, pageable);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("medicines", pageResult.getContent());
+        result.put("totalPages", pageResult.getTotalPages());
+        result.put("currentPage", page);
+        return ResponseEntity.ok(result);
     }
 
 }

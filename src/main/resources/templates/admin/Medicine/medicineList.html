@@ -35,17 +35,19 @@
         </nav>
 
         <!-- partial -->
-        <div class="main-panel">
-            <h1 class="text-center">Medicine List</h1>
-            <a href="/add-medicine" class="btn btn-success mb-3">Add New Medicine</a>
+        <div class="mt-3 main-panel">
+            <h2 class="text-center">Danh sách thuốc</h2>
+            <div class="d-flex justify-content-start mb-3">
+                <a href="/add-medicine" class="btn btn-success btn-lg px-4">Tạo mới thuốc</a>
+            </div>
             <table class="table table-bordered">
                 <thead class="table-dark">
                 <tr>
                     <th>#</th>
-                    <th>Name</th>
-                    <th>Image</th>
-                    <th>Price</th>
-                    <th>Actions</th>
+                    <th>Tên thuốc</th>
+                    <th>Ảnh</th>
+                    <th>Giá</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody id="medicineTable"></tbody>

@@ -20,6 +20,7 @@ public class Medicine extends AbstractEntity<Integer>{
 
     private String image;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     private String manufacturer;

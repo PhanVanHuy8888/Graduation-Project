@@ -33,22 +33,23 @@
             <div th:replace="admin/aside :: header"></div>
         </nav>
         <!-- partial -->
-        <div class="main-panel">
-            <h1 class="text-center">Order List</h1>
+        <div class="mt-3 main-panel">
+            <h2 class="text-center">Danh sách đơn hàng</h2>
             <table class="table table-bordered">
                 <thead class="table-dark">
                 <tr>
                     <th>#</th>
-                    <th>Order No</th>
-                    <th>Name</th>
-                    <th>PayMent</th>
-                    <th>Start Date</th>
-                    <th>Payment Status</th>
-                    <th>Actions</th>
+                    <th>Mã đơn</th>
+                    <th>Tên</th>
+                    <th>Phương thức</th>
+                    <th>Ngày tạo</th>
+                    <th>Trạng thái</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody id="orderTableBody"></tbody>
             </table>
+            <div id="pagination" class="mt-3 text-center"></div>
         </div>
         <!-- main-panel ends -->
     </div>
@@ -61,7 +62,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="orderModalLabel">Order Details</h5>
+                <h5 class="modal-title" id="orderModalLabel">Thông tin đơn hàng</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -78,10 +79,10 @@
                 <table class="table table-bordered">
                     <thead class="table-dark">
                         <tr>
-                            <th>Medicine</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                            <th>Total</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Giá</th>
+                            <th>Tổng</th>
                         </tr>
                     </thead>
                     <tbody id="orderDetailsTable"></tbody>

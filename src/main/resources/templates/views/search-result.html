@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết quả tìm kiếm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
+
+    <!-- bootstrap core css -->
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.css" />
+
+    <!-- fonts style -->
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Chettan|Dosis:400,600,700|Poppins:400,600,700&display=swap" rel="stylesheet" />
+    <!-- Custom styles for this template -->
+    <link href="/css/style.css" rel="stylesheet" />
+    <!-- responsive style -->
+    <link href="/css/responsive.css" rel="stylesheet" />
+    <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+            rel="stylesheet"
+    />
+</head>
+<body>
+<div th:include="static/header :: header"></div>
+
+
+<div class="container mt-5">
+    <h2>Kết quả tìm kiếm</h2>
+    <div id="medicineResults" class="mt-4"></div>
+
+    <!-- Phân trang -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center" id="pagination"></ul>
+    </nav>
+</div>
+<div th:include="static/footer :: footer"></div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Lấy tham số từ URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const keyword = urlParams.get('keyword');
+    const pageSize = 5;  // Fix pageSize là 5
+
+    const apiUrl = '/api/medicines/search';  // Địa chỉ API tìm kiếm
+
+    // Hàm gọi API và hiển thị kết quả
+    async function fetchMedicines(keyword, page, size) {
+        try {
+            const response = await fetch(`${apiUrl}?keyword=${keyword}&page=${page}&size=${size}`);
+            const data = await response.json();
+            displayMedicines(data);
+        } catch (error) {
+            console.error('Lỗi khi tìm kiếm thuốc:', error);
+        }
+    }
+
+    // Hàm hiển thị kết quả tìm kiếm
+    function displayMedicines(data) {
+        const medicines = data.medicines;
+        const totalPages = data.totalPages;
+        const currentPage = data.currentPage;
+
+        // Hiển thị danh sách thuốc
+        const resultsContainer = document.getElementById('medicineResults');
+        medicines.forEach((medicine) => {
+            const medicineCard = document.createElement('div');
+            medicineCard.classList.add('col-lg-4', 'col-md-12', 'mb-4');
+
+            // Định dạng giá
+            const formattedPrice = new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(medicine.price);
+
+            medicineCard.innerHTML = `
+                <div class="card">
+                    <a href="/detail-medicine?id=${medicine.id}" class="text-decoration-none text-dark">
+                        <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light" data-mdb-ripple-color="light">
+                            <img class="w-100" src="${medicine.image}" alt="${medicine.name}">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">${medicine.name}</h5>
+                            <p>${medicine.categoryMedicine.categoryMedicineName}</p>
+                            <h6 class="mb-3">
+                                <span class="text-black rounded-pill py-2 px-3 font-weight-bold">
+                                    ${formattedPrice}
+                                </span>
+                            </h6>
+                        </div>
+                    </a>
+                    <button class="btn btn-primary" onclick="addToCart('${medicine.name}', ${medicine.price})">
+                        Chọn mua
+                    </button>
+                </div>
+            `;
+
+            resultsContainer.appendChild(medicineCard);
+        });
+        // resultsContainer.innerHTML = `
+        //         <div class="card">
+        //             <a href="/detail-medicine?id=${medicine.id}" class="text-decoration-none text-dark">
+        //                 <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light" data-mdb-ripple-color="light">
+        //                     <img class="w-100" src="${medicine.image}" alt="${medicine.name}">
+        //                 </div>
+        //                 <div class="card-body">
+        //                     <h5 class="card-title mb-3">${medicine.name}</h5>
+        //                     <p>${medicine.categoryMedicine.categoryMedicineName}</p>
+        //                     <h6 class="mb-3">
+        //                         <span class="text-black rounded-pill py-2 px-3 font-weight-bold">
+        //                             ${formattedPrice}
+        //                         </span>
+        //                     </h6>
+        //                 </div>
+        //             </a>
+        //             <button class="btn btn-primary" onclick="addToCart('${medicine.name}', ${medicine.price})">
+        //                 Chọn mua
+        //             </button>
+        //         </div>
+        //     `;
+
+        // Hiển thị phân trang
+        const paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = '';
+        for (let i = 0; i < totalPages; i++) {
+            const pageItem = document.createElement('li');
+            pageItem.className = `page-item ${currentPage === i ? 'active' : ''}`;
+            pageItem.innerHTML = `<a class="page-link" href="#" onclick="onPageClick(${i})">${i + 1}</a>`;
+            paginationContainer.appendChild(pageItem);
+        }
+
+    }
+
+    async function fetchCategory() {
+        console.log("fetchCategory function is called!"); // Log kiểm tra
+
+        try {
+            const response = await fetch("/api/categories");
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("Fetched categories:", data); // Kiểm tra dữ liệu trả về
+
+            const categoryList = document.getElementById("categoryList");
+            if (!categoryList) {
+                console.error("Element #categoryList not found!");
+                return;
+            }
+
+            categoryList.innerHTML = ""; // Xóa danh sách cũ
+
+            data.forEach(category => {
+                const listItem = document.createElement("li");
+                listItem.classList.add("nav-item");
+
+                listItem.innerHTML = `
+                    <a class="nav-link" href="/${category.url}">
+                        ${category.categoryName}
+                    </a>
+                `;
+
+                categoryList.appendChild(listItem);
+            });
+
+            console.log("Categories rendered successfully!");
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    }
+
+    window.onload = function () {
+        fetchCategory();
+    };
+
+
+
+    // Hàm xử lý khi người dùng nhấn vào phân trang
+    function onPageClick(page) {
+        fetchMedicines(keyword, page, pageSize);
+    }
+
+    // Gọi API để hiển thị kết quả tìm kiếm trang đầu tiên (page 0)
+    fetchMedicines(keyword, 0, pageSize);
+</script>
+
+</body>
+</html>
+

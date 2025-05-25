@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>Xác nhận thanh toán</title>
+</head>
+<body>
+<h2>💳 Xác nhận thanh toán</h2>
+<p>Số tiền: <span id="amount"></span> VND</p>
+<button onclick="confirmPayment()">Xác nhận thanh toán</button>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get('orderId');
+    const price = params.get('price');
+
+    document.getElementById('amount').innerText = price;
+
+    function confirmPayment() {
+        // Ghi trạng thái thanh toán vào localStorage
+        alert('✅ Thanh toán thành công!');
+        window.location.href = 'index';
+    }
+</script>
+</body>
+</html>

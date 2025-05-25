@@ -14,7 +14,10 @@
                 <ul class="list-group mb-3" id="cartList"></ul>
                 <div id="totalAmount" class="d-none"></div>
 
-                <h4 class="mb-3">Thông tin khách hàng</h4>
+                <h4 class="mb-3">Thông tin khách hàng</h4><div class="mb-3">
+                    <label for="username">Tên người dùng</label>
+                    <input type="text" class="form-control" id="username" required>
+                </div>
                 <div class="mb-3">
                     <label for="email">Email</label>
                     <input type="email" class="form-control" id="email" required>
@@ -38,8 +41,11 @@
                         <input id="cod" name="paymentMethod" type="radio" class="form-check-input" value="COD" checked>
                         <label class="form-check-label" for="cod">Thanh toán khi nhận hàng</label>
                     </div>
+                    <div class="form-check">
+                        <input id="online" name="paymentMethod" type="radio" class="form-check-input" value="ONLINE">
+                        <label class="form-check-label" for="online">Thanh toán online (demo)</label>
+                    </div>
                 </div>
-
                 <hr class="mb-4">
                 <button class="btn btn-primary btn-lg btn-block" type="submit">Thanh toán</button>
             </form>

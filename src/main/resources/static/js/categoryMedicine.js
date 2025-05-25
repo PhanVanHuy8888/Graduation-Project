@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api/category-medicine";
+const API_URL = "/api/category-medicine";
 
 //  Fetch danh sách category
 function fetchCategories() {
@@ -13,8 +13,8 @@ function fetchCategories() {
                     <td>${index + 1}</td>
                     <td>${category.categoryMedicineName}</td>
                     <td>
-                        <a class="btn btn-warning" href="edit-cate-medicine?id=${category.id}">Edit</a>
-                        <button class="btn btn-danger" onclick="deleteCategory(${category.id})">Delete</button>
+                        <a class="btn btn-warning" href="edit-cate-medicine?id=${category.id}">Sửa</a>
+                        <button class="btn btn-danger" onclick="deleteCategory(${category.id})">Xoá</button>
                     </td>
                 `;
                 tableBody.appendChild(row);

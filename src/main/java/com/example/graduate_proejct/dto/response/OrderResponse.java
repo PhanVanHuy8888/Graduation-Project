@@ -29,7 +29,7 @@ public class OrderResponse {
         this.email = order.getEmail();
         this.note = order.getNote();
         this.phone = order.getPhone();
-        this.userName = order.getUser().getUserName();
+        this.userName = (order.getUser() != null) ? order.getUser().getUserName() : "Khách";
         this.total = order.getOrderDetails().stream().mapToDouble(OrderDetail::getTotal).sum();
         this.payment = order.getPayment();
         this.paymentStatus = order.getPaymentStatus();

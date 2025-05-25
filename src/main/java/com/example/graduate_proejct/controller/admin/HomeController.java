@@ -110,4 +110,19 @@ public class HomeController {
     public String ListArticle() {
         return "admin/Article/articleList";
     }
+
+    @GetMapping("/list-role")
+    public String ListRole() {
+        return "admin/Role/roleList";
+    }
+
+    @GetMapping("/user-form")
+    public String userForm() {
+        return "admin/User/user-form";
+    }
+
+    @GetMapping("/user-edit")
+    public String userEdit() {
+        return "admin/User/user-edit";
+    }
 }

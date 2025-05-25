@@ -19,6 +19,16 @@
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
             rel="stylesheet"
     />
+    <style>
+        #starRating .fa-star {
+            font-size: 24px;
+            color: #ccc;
+            cursor: pointer;
+        }
+        #starRating .fa-star.selected {
+            color: gold;
+        }
+    </style>
 </head>
 <body>
 <div class="main_body_content">
@@ -29,7 +39,41 @@
 
             </div>
         </div>
+
     </section>
+    <section class="py-5 ">
+        <div class="container px-4 px-lg-5 my-5">
+            <!-- Đánh giá trung bình -->
+            <div id="averageRating" class="mb-3"></div>
+
+            <!-- Form bình luận -->
+            <form id="commentForm" class="mb-4">
+                <div class="mb-3">
+                    <label for="commentContent">Bình luận</label>
+                    <textarea id="commentContent" class="form-control"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label>Đánh giá:</label><br/>
+                    <div id="starRating">
+                        <i class="fa fa-star" data-value="1"></i>
+                        <i class="fa fa-star" data-value="2"></i>
+                        <i class="fa fa-star" data-value="3"></i>
+                        <i class="fa fa-star" data-value="4"></i>
+                        <i class="fa fa-star" data-value="5"></i>
+                    </div>
+                    <input type="hidden" id="selectedRating" value="5">
+                </div>
+                <button type="submit" class="btn btn-primary">Gửi bình luận</button>
+            </form>
+
+            <h5>Các bình luận</h5>
+            <!-- Danh sách bình luận -->
+            <div id="commentList" class="border">
+
+            </div>
+        </div>
+    </section>
+
     <section class="py-5 bg-light">
         <div class="container px-4 px-lg-5 mt-5">
             <h2 class="fw-bolder mb-4">Sản phẩm tương tự</h2>
@@ -49,51 +93,6 @@
 <script src="js/custom.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.umd.min.js"></script>
 <script src="/js/medicine.js"></script>
-
-<!--<div id="customAlert">Thêm vào giỏ hàng thành công !!</div>-->
-<script>
-    async function fetchCategory() {
-        console.log("fetchCategory function is called!"); // Log kiểm tra
-
-        try {
-            const response = await fetch("http://localhost:8080/api/categories");
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log("Fetched categories:", data); // Kiểm tra dữ liệu trả về
-
-            const categoryList = document.getElementById("categoryList");
-            if (!categoryList) {
-                console.error("Element #categoryList not found!");
-                return;
-            }
-
-            categoryList.innerHTML = ""; // Xóa danh sách cũ
-
-            data.forEach(category => {
-                const listItem = document.createElement("li");
-                listItem.classList.add("nav-item");
-
-                listItem.innerHTML = `
-                    <a class="nav-link" href="/${category.url}">
-                        ${category.categoryName}
-                    </a>
-                `;
-
-                categoryList.appendChild(listItem);
-            });
-
-            console.log("Categories rendered successfully!");
-        } catch (error) {
-            console.error("Error fetching categories:", error);
-        }
-    }
-
-    window.onload = function () {
-        fetchCategory();
-    };
-</script>
+<script src="/js/detailMe.js"></script>
 </body>
 </html>

@@ -30,7 +30,9 @@ async function fetchMedicines(categoryId = null, page = 0) {
                     <a href="/detail-medicine?id=${medicine.id}" class="text-decoration-none text-dark">
                         <img class="card-img-top" src="${medicine.image}" alt="${medicine.name}">
                         <div class="card-body">
-                            <h5 class="card-title">${medicine.name}</h5>
+                            <h5 class="card-title mb-3" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                ${medicine.name}
+                            </h5>
                             <p class="text-muted">${medicine.categoryMedicine.categoryMedicineName}</p>
                             <h6 class="text-primary font-weight-bold">${formattedPrice}</h6>
                         </div>
@@ -167,8 +169,7 @@ async function fetchCategory() {
         console.error("Error fetching categories:", error);
     }
 }
-
-function renderPagination(totalPages, currentPage, categoryId) {
+function renderPagination(totalPages, currentPage, categoryId, sortOrder = '') {
     const paginationContainer = document.getElementById("paginationContainer");
     paginationContainer.innerHTML = "";
 
@@ -176,10 +177,11 @@ function renderPagination(totalPages, currentPage, categoryId) {
         const pageBtn = document.createElement("button");
         pageBtn.classList.add("btn", "btn-sm", "me-1", i === currentPage ? "btn-primary" : "btn-outline-primary");
         pageBtn.innerText = i + 1;
-        pageBtn.onclick = () => fetchMedicines(categoryId, i);
+        pageBtn.onclick = () => fetchMedicines(categoryId, i, sortOrder);
         paginationContainer.appendChild(pageBtn);
     }
 }
+
 
 
 window.onload = function () {
@@ -192,4 +194,63 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchMedicines();
 });
 
-// Hàm thêm sản phẩm vào giỏ hàng (demo)
+let currentCategoryId = null;
+
+async function fetchMedicines(categoryId = null, page = 0, sortOrder = '') {
+    try {
+        currentCategoryId = categoryId;
+        let url = `${API_URL}?page=${page}`;
+        if (categoryId) url += `&categoryId=${categoryId}`;
+        if (sortOrder) url += `&sort=${sortOrder}`;
+
+        const response = await fetch(url);
+        const result = await response.json();
+
+        const medicines = result.medicines;
+        const totalPages = result.totalPages;
+        const currentPage = result.currentPage;
+
+        const medicineContainer = document.getElementById('medicineContainer');
+        medicineContainer.innerHTML = "";
+
+        medicines.forEach((medicine) => {
+            const formattedPrice = new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(medicine.price);
+
+            const medicineCard = document.createElement('div');
+            medicineCard.classList.add('col-lg-4', 'col-md-6', 'mb-4');
+            medicineCard.innerHTML = `
+                <div class="card h-100 shadow-sm">
+                    <a href="/detail-medicine?id=${medicine.id}" class="text-decoration-none text-dark">
+                        <img class="card-img-top" src="${medicine.image}" alt="${medicine.name}">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                ${medicine.name}
+                            </h5>
+                            <p class="text-muted">${medicine.categoryMedicine.categoryMedicineName}</p>
+                            <h6 class="text-primary font-weight-bold">${formattedPrice}</h6>
+                        </div>
+                    </a>
+                    <div class="card-footer text-center">
+                        <button class="btn btn-success w-100" onclick="addToCart('${medicine.name}', ${medicine.price})">
+                            Chọn mua
+                        </button>
+                    </div>
+                </div>
+            `;
+            medicineContainer.appendChild(medicineCard);
+        });
+
+        renderPagination(totalPages, currentPage, categoryId, sortOrder);
+    } catch (error) {
+        console.error('Lỗi khi tải sản phẩm:', error);
+    }
+}
+
+function handleSortChange() {
+    const sortOrder = document.getElementById("sortSelect").value;
+    fetchMedicines(currentCategoryId, 0, sortOrder); // `currentCategoryId` là biến lưu danh mục hiện tại
+}
+

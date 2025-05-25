@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Date;
+import java.util.Set;
 
 @Builder
 @Getter
@@ -22,4 +23,6 @@ public class UserResponse {
     private Date birthday;
 
     private String gender;
+
+    private Set<String> roles;
 }

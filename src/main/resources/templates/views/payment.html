@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Thanh Toán Đơn Hàng</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+  <div class="card p-4 shadow">
+    <h4 class="mb-3">🔐 Vui lòng quét mã QR để xác nhận thanh toán</h4>
+
+    <p><strong>Số tiền cần thanh toán:</strong> <span id="amount" class="text-danger font-weight-bold"></span> VND</p>
+
+    <img id="qrImage" width="200" class="mb-3" alt="QR Code">
+
+    <p class="text-muted">⏳ Đang chờ xác nhận thanh toán...</p>
+  </div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get('orderId');
+  const price = params.get('price');
+
+  // Hiển thị số tiền
+  document.getElementById('amount').innerText = price;
+
+  // Tạo link đến trang xác nhận thanh toán (quét bằng điện thoại)
+  const confirmUrl = `http://192.168.1.204:8080/payment-confirm?orderId=${orderId}&price=${price}`;
+  const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(confirmUrl)}`;
+
+  document.getElementById('qrImage').src = qrImageUrl;
+
+  // Poll mỗi 3 giây để kiểm tra trạng thái thanh toán
+  setTimeout(() => {
+    window.location.href = 'success';
+  }, 20000);
+</script>
+</body>
+</html>
+

@@ -10,7 +10,9 @@ import com.example.graduate_proejct.repository.SupplierRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -73,9 +75,19 @@ public class MedicineService {
                 .orElseThrow(() -> new RuntimeException("Medicine not found"));
     }
 
-    public Page<Medicine> getAllMedicines(Pageable pageable) {
+    public Page<Medicine> getAllMedicines(int page, int size, String sortDirection) {
+        Sort sort = Sort.unsorted();
+
+        if ("asc".equalsIgnoreCase(sortDirection)) {
+            sort = Sort.by("price").ascending();
+        } else if ("desc".equalsIgnoreCase(sortDirection)) {
+            sort = Sort.by("price").descending();
+        }
+
+        Pageable pageable = PageRequest.of(page, size, sort);
         return medicineRepository.findAll(pageable);
     }
+
 
     public List<Medicine> getMede() {
         return medicineRepository.findAll();
@@ -116,10 +128,25 @@ public class MedicineService {
         return medicineRepository.save(medicine);
     }
 
-    public Page<Medicine> getMedicinesByCate(Integer categoryId, Pageable pageable) {
+//    public Page<Medicine> getMedicinesByCate(Integer categoryId, Pageable pageable) {
+//        return medicineRepository.findByCategoryMedicineId(categoryId, pageable);
+//    }
+
+    public Page<Medicine> getMedicinesByCate(Integer categoryId, int page, int size, String sortDirection) {
+        Sort sort = Sort.unsorted();
+        if ("asc".equalsIgnoreCase(sortDirection)) {
+            sort = Sort.by("price").ascending();
+        } else if ("desc".equalsIgnoreCase(sortDirection)) {
+            sort = Sort.by("price").descending();
+        }
+
+        Pageable pageable = PageRequest.of(page, size, sort);
         return medicineRepository.findByCategoryMedicineId(categoryId, pageable);
     }
 
+    public Page<Medicine> searchMedicine(String keyword, Pageable pageable) {
+        return medicineRepository.findByNameContainingIgnoreCase(keyword, pageable);
+    }
 
 
     public void deleteMedicine(Integer id) {

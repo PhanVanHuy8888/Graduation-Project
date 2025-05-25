@@ -1,0 +1,22 @@
+body {
+    background: linear-gradient(135deg, #e0f7fa, #fce4ec);
+    font-family: 'Roboto', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-container {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+}
+
+h1 {
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}

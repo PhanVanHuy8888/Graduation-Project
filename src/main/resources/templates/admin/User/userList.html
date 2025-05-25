@@ -33,16 +33,20 @@
             <div th:replace="admin/aside :: header"></div>
         </nav>
         <!-- partial -->
-        <div class="main-panel">
-            <h1 class="text-center">User List</h1>
+        <div class="mt-3 main-panel">
+            <h2 class="text-center">Danh sách người dùng</h2>
+            <div class="d-flex justify-content-start mb-3">
+                <a href="user-form" class="btn btn-success btn-lg px-4">Tạo người dùng</a>
+            </div>
             <table class="table table-bordered">
                 <thead class="table-dark">
                 <tr>
                     <th>#</th>
-                    <th>Name</th>
+                    <th>Tên</th>
                     <th>Email</th>
-                    <th>Address</th>
-                    <th>Actions</th>
+                    <th>Địa chỉ</th>
+                    <th>Quyền</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody id="userTableBody"></tbody>

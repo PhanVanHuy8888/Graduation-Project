@@ -17,5 +17,6 @@ public interface MedicineRepository extends JpaRepository<Medicine, Integer> {
 
     Page<Medicine> findByCategoryMedicineId(Integer categoryId, Pageable pageable);
 
+    Page<Medicine> findByNameContainingIgnoreCase(String keyword, Pageable pageable);
 }
 

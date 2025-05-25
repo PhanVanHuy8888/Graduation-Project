@@ -90,7 +90,7 @@
     console.log("fetchCategory function is called!"); // Log kiểm tra
 
     try {
-      const response = await fetch("http://localhost:8080/api/categories");
+      const response = await fetch("/api/categories");
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }

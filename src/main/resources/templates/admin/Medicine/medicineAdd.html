@@ -1,50 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medicine Form</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Thêm Thuốc</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #e3f2fd, #fce4ec);
+            font-family: 'Roboto', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        h1 {
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #ff9800;
+        }
+
+        label {
+            font-weight: 500;
+        }
+
+        ::file-selector-button {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            background-color: #e0e0e0;
+        }
+    </style>
 </head>
-<body class="container mt-5">
-<h1 class="text-center" id="formTitle">Add Medicine</h1>
-<form id="addMedicineForm" class="w-50 mx-auto" enctype="multipart/form-data">
+<body>
+<div class="form-container">
+    <h1 class="text-center" id="formTitle">Thêm Thuốc</h1>
+    <form id="addMedicineForm" enctype="multipart/form-data">
+        <div class="mb-3"><label class="form-label">Tên thuốc</label><input type="text" id="name" class="form-control" required></div>
+        <div class="mb-3"><label class="form-label">Giá</label><input type="number" id="price" class="form-control" required></div>
+        <div class="mb-3"><label class="form-label">Mô tả</label><input type="text" id="description" class="form-control" required></div>
+        <div class="mb-3"><label class="form-label">Nhà sản xuất</label><input type="text" id="manufacturer" class="form-control" required></div>
+        <div class="mb-3"><label class="form-label">Thành phần</label><input type="text" id="ingredient" class="form-control" required></div>
+        <div class="mb-3"><label class="form-label">Số đăng ký</label><input type="text" id="registrationNumber" class="form-control" required></div>
+        <div class="mb-3"><label class="form-label">Tiêu chuẩn chất lượng</label><input type="text" id="qualityStandards" class="form-control" required></div>
+        <div class="mb-3"><label class="form-label">Hạn sử dụng</label><input type="text" id="shelfLife" class="form-control" required></div>
+        <div class="mb-3"><label class="form-label">Dạng bào chế</label><input type="text" id="dosageForm" class="form-control" required></div>
+        <div class="mb-3"><label class="form-label">Quy cách đóng gói</label><input type="text" id="specification" class="form-control" required></div>
+        <div class="mb-3"><label class="form-label">Xuất xứ</label><input type="text" id="origin" class="form-control" required></div>
+        <div class="mb-3"><label class="form-label">Số lượng</label><input type="text" id="quantity" class="form-control" required></div>
+        <div class="mb-3">
+            <label class="form-label">Chọn hình ảnh</label>
+            <input type="file" id="image" class="form-control" accept="image/*">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Danh mục thuốc</label>
+            <select id="categoryMedicine" class="form-control" required>
+                <option value="">-- Chọn danh mục thuốc --</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Nhà cung cấp</label>
+            <select id="supplier" class="form-control" required>
+                <option value="">-- Chọn nhà cung cấp --</option>
+            </select>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-warning w-100">Lưu</button>
+            <a href="list-medicine" class="btn btn-outline-primary w-100">Quay lại</a>
+        </div>
+    </form>
+</div>
 
-    <div class="mb-3"><label class="form-label">Name</label><input type="text" id="name" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Price</label><input type="number" id="price" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Description</label><input type="text" id="description" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Manufacturer</label><input type="text" id="manufacturer" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Ingredient</label><input type="text" id="ingredient" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Registration Number</label><input type="text" id="registrationNumber" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Quality Standards</label><input type="text" id="qualityStandards" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Shelf Life</label><input type="text" id="shelfLife" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Dosage Form</label><input type="text" id="dosageForm" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Specification</label><input type="text" id="specification" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Origin</label><input type="text" id="origin" class="form-control" required></div>
-    <div class="mb-3"><label class="form-label">Quantity</label><input type="text" id="quantity" class="form-control" required></div>
-    <div class="mb-3">
-        <label class="form-label">Select Image</label>
-        <input type="file" id="image" class="form-control" accept="image/*">
-    </div>
-    <div class="mb-3">
-        <label class="form-label">Select category medicine</label>
-        <select id="categoryMedicine" class="form-control" required>
-            <option value="">-- Select Category Medicine --</option>
-        </select>
-    </div>
-    <div class="mb-3">
-        <label class="form-label">Select supplier</label>
-        <select id="supplier" class="form-control" required>
-            <option value="">-- Select Supplier --</option>
-        </select>
-    </div>
-    <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-warning w-100">Save</button>
-        <a href="list-medicine" class="btn btn-primary w-100">Back</a>
-    </div>
-</form>
-
+<!-- Scripts -->
 <script src="/js/medicine.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,8 +1,8 @@
-const API_URLS = "http://localhost:8080/api/medicines/getMede";
-const API_URL = "http://localhost:8080/api/medicines";
-const CATEGORY_API = "http://localhost:8080/api/category-medicine";
-const CART_API = "http://localhost:8080/api/cart";
-const SUPPLIER_API = "http://localhost:8080/api/supplier";
+const API_URLS = "/api/medicines/getMede";
+const API_URL = "/api/medicines";
+const CATEGORY_API = "/api/category-medicine";
+const CART_API = "/api/cart";
+const SUPPLIER_API = "/api/supplier";
 const urlParams = new URLSearchParams(window.location.search);
 const medicineId = urlParams.get("id");
 
@@ -53,9 +53,9 @@ function fetchMedicines(page = 0, size = 5) {
                     </td>
                     <td>${medicine.price}</td>
                     <td>
-                        <a class="badge badge-outline-warning" href="edit-medicine?id=${medicine.id}">Edit</a>
-                        <a class="badge badge-outline-info" href="#" onclick='viewMedicine(${JSON.stringify(medicine)})'>View</a>
-                        <button class="badge badge-outline-danger" onclick="deleteMedicine(${medicine.id})">Delete</button>
+                        <a class="badge badge-outline-warning" href="edit-medicine?id=${medicine.id}">Sửa</a>
+                        <a class="badge badge-outline-info" href="#" onclick='viewMedicine(${JSON.stringify(medicine)})'>Xem</a>
+                        <button class="badge badge-outline-danger" onclick="deleteMedicine(${medicine.id})">Xoá</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
@@ -122,7 +122,9 @@ async function fetchMedicinesIndex(page = 0, size = 6) {
                             <img class="w-100" src="${medicine.image}" alt="${medicine.name}">
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title mb-3">${medicine.name}</h5>
+                            <h5 class="card-title mb-3" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                ${medicine.name}
+                            </h5>
                             <p>${medicine.categoryMedicine.categoryMedicineName}</p>
                             <h6 class="mb-3">
                                 <span class="text-black rounded-pill py-2 px-3 font-weight-bold">
@@ -147,6 +149,7 @@ async function fetchMedicinesIndex(page = 0, size = 6) {
         console.error('Error fetching products:', error);
     }
 }
+
 
 function displayPagination(currentPage, totalPages) {
     const paginationContainer = document.getElementById('paginationContainer');
@@ -184,51 +187,34 @@ document.addEventListener("DOMContentLoaded", function () {
 //     console.log("User ID stored:", userId);
 // }
 async function addToCart(medicineName, price, quantity = 1) {
-    let userId = localStorage.getItem("userId");
-    if (!userId) {
-        alert("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
-        window.location.href = "/signin"; // Redirect người dùng đến trang đăng nhập
-        return;
-    }
+    const userId = localStorage.getItem("userId");
 
-    // Fetch thông tin sản phẩm để kiểm tra số lượng
+    // Kiểm tra số lượng nếu cần thiết từ API
     try {
         const response = await fetch(API_URL);
-
-        // Kiểm tra mã trạng thái HTTP
         if (!response.ok) {
             console.error("Lỗi khi lấy dữ liệu từ API, mã lỗi:", response.status);
             alert("Lỗi khi lấy dữ liệu sản phẩm.");
             return;
         }
 
-        // In ra nội dung phản hồi dưới dạng văn bản để kiểm tra
         const text = await response.text();
-        console.log("Dữ liệu nhận được:", text); // In ra nội dung phản hồi dưới dạng văn bản
-
-        // Kiểm tra xem phản hồi có phải là JSON không
         let data;
         try {
-            data = JSON.parse(text); // Cố gắng chuyển đổi văn bản thành JSON
+            data = JSON.parse(text);
         } catch (e) {
             console.error("Lỗi khi phân tích cú pháp JSON:", e);
             alert("Dữ liệu không phải là JSON.");
             return;
         }
 
-        console.log("Medicines Data:", data); // Kiểm tra dữ liệu trả về
-
-        // Kiểm tra nếu dữ liệu trả về chứa mảng medicines
         if (!data.medicines || !Array.isArray(data.medicines)) {
             console.error("Dữ liệu không hợp lệ, thiếu mảng medicines.");
             alert("Dữ liệu sản phẩm không hợp lệ.");
             return;
         }
 
-        const medicines = data.medicines;
-        const medicine = medicines.find(med => med.name === medicineName);
-
-        // Nếu sản phẩm không tồn tại hoặc hết hàng, hiển thị thông báo và thoát hàm
+        const medicine = data.medicines.find(med => med.name === medicineName);
         if (!medicine) {
             alert("Sản phẩm không tồn tại!");
             return;
@@ -239,13 +225,10 @@ async function addToCart(medicineName, price, quantity = 1) {
             return;
         }
 
-        // Kiểm tra nếu trên trang chi tiết sản phẩm, lấy số lượng từ input
         const quantityInput = document.getElementById("inputQuantity");
         if (quantityInput) {
             quantity = parseInt(quantityInput.value) || 1;
         }
-
-        console.log("Adding to cart:", { userId, medicineName, price, quantity });
 
         const cartItem = {
             medicineName: medicineName,
@@ -253,21 +236,39 @@ async function addToCart(medicineName, price, quantity = 1) {
             quantity: quantity
         };
 
-        // Gửi yêu cầu API để lưu vào giỏ hàng của người dùng
-        const cartResponse = await fetch(CART_API, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, ...cartItem })
-        });
+        if (userId) {
+            // Người dùng đã đăng nhập, gửi lên server
+            const cartResponse = await fetch(CART_API, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({userId, ...cartItem})
+            });
 
-        const result = await cartResponse.json();
-        console.log("Response:", result);
-        alert(result.message);
+            const result = await cartResponse.json();
+            console.log("Response:", result);
+            alert(result.message);
+        } else {
+            // Người dùng chưa đăng nhập, lưu vào localStorage
+            let localCart = JSON.parse(localStorage.getItem("guestCart")) || [];
+
+            // Nếu sản phẩm đã có trong giỏ thì cộng dồn
+            const existingItem = localCart.find(item => item.medicineName === medicineName);
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                localCart.push(cartItem);
+            }
+
+            localStorage.setItem("guestCart", JSON.stringify(localCart));
+            alert("Đã thêm sản phẩm vào giỏ hàng (chưa đăng nhập).");
+        }
+
     } catch (error) {
-        console.error("Lỗi khi thêm vào giỏ hàng:", error); // In ra lỗi chi tiết
+        console.error("Lỗi khi thêm vào giỏ hàng:", error);
         alert("Lỗi khi thêm vào giỏ hàng!");
     }
 }
+
 
 
 // End add Cart
@@ -468,9 +469,10 @@ async function loadMedicineDetails(medicineId) {
                 <div class="col-md-6">
                     <h1 class="display-5 fw-bolder">${medicine.name}</h1>
                     <div class="fs-5 mb-5">
-                        <span>${formattedPrice}</span>
+                        <span>${formattedPrice}/Hộp</span>
                     </div>
-                    <p class="lead">${medicine.description}</p>
+                    <p class="lead">Xuất xứ thương hiệu: ${medicine.manufacturer}</p>
+                    <p class="lead">Danh mục: ${medicine.categoryMedicine.categoryMedicineName}</p>
                     <div class="d-flex">
                         <input class="form-control text-center me-3" id="inputQuantity" type="number" value="1"
                                style="max-width: 3rem"/>
@@ -481,6 +483,57 @@ async function loadMedicineDetails(medicineId) {
                     </div>
                 </div>
             </div>
+            <h5>Thông số và mô tả</h5>
+            <div class="row gx-4 gx-lg-5">
+                <div class="col-md-6">
+                    <p><strong>Thành phần:</strong></p>
+                </div>
+                <div class="col-md-6">
+                    <p>${medicine.ingredient}</p>
+                </div>
+            
+                <div class="col-md-6">
+                    <p><strong>Số đăng ký:</strong></p>
+                </div>
+                <div class="col-md-6">
+                    <p>${medicine.registrationNumber}</p>
+                </div>
+            
+                <div class="col-md-6">
+                    <p><strong>Hạn dùng (theo thành phần):</strong></p>
+                </div>
+                <div class="col-md-6">
+                    <p>${medicine.ingreshelfLifedient}</p>
+                </div>
+            
+                <div class="col-md-6">
+                    <p><strong>Hạn sử dụng:</strong></p>
+                </div>
+                <div class="col-md-6">
+                    <p>${medicine.shelfLife}</p>
+                </div>
+            
+                <div class="col-md-6">
+                    <p><strong>Dạng bào chế:</strong></p>
+                </div>
+                <div class="col-md-6">
+                    <p>${medicine.dosageForm}</p>
+                </div>
+            
+                <div class="col-md-6">
+                    <p><strong>Quy cách:</strong></p>
+                </div>
+                <div class="col-md-6">
+                    <p>${medicine.specification}</p>
+                </div>
+               
+            </div>
+            <div class="mt-3">
+                <p><strong>Mô tả:</strong></p>
+                <p>${medicine.description}</p>
+            </div>
+            
+
         `;
 
         medicineContainer.appendChild(medicineCard);
@@ -489,7 +542,6 @@ async function loadMedicineDetails(medicineId) {
         document.getElementById("detailMedicine").textContent = 'Có lỗi xảy ra khi tải dữ liệu';
     }
 }
-
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -509,7 +561,7 @@ function showAlert() {
 }
 
 
-async function fetchProducts(page = 0, size= 4) {
+async function fetchProducts(page = 0, size = 4) {
     try {
         const response = await fetch(`${API_URL}?page=${page}&size=${size}`);
         const data = await response.json();
@@ -529,8 +581,6 @@ async function fetchProducts(page = 0, size= 4) {
                 currency: 'VND'
             }).format(medicine.price);
 
-            const truncatedName = medicine.name.length > 20 ? medicine.name.substring(0, 20) + '...' : medicine.name;
-
             medicineCard.innerHTML = `
                 <div class="card">
                     <a href="/detail-medicine?id=${medicine.id}" class="text-decoration-none text-dark">
@@ -538,7 +588,9 @@ async function fetchProducts(page = 0, size= 4) {
                             <img class="w-100" src="${medicine.image}" alt="${medicine.name}">
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title mb-3">${truncatedName}</h5>
+                            <h5 class="card-title mb-3" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                ${medicine.name}
+                            </h5>
                             <p>${medicine.categoryMedicine.categoryMedicineName}</p>
                             <h6 class="mb-3">
                                 <span class="text-black rounded-pill py-2 px-3 font-weight-bold">
@@ -562,8 +614,6 @@ async function fetchProducts(page = 0, size= 4) {
         console.error('Error fetching products:', error);
     }
 }
-
-
 
 
 // Gọi API khi tải trang danh sách thuốc

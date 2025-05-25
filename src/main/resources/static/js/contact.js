@@ -2,7 +2,7 @@ async function fetchCategory() {
     console.log("fetchCategory function is called!"); // Log kiểm tra
 
     try {
-        const response = await fetch("http://localhost:8080/api/categories");
+        const response = await fetch("/api/categories");
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -39,6 +39,7 @@ async function fetchCategory() {
 
 window.onload = function () {
     fetchCategory();
+    loadContacts();
 };
 
 document.getElementById("contactForm").addEventListener("submit", async function (e) {
@@ -86,9 +87,9 @@ async function loadContacts() {
             const row = `
                     <tr>
                         <td>${index + 1}</td>
-                        <td>${contact.name}</td>
+                        <td>${contact.fullName}</td>
                         <td>${contact.email}</td>
-                        <td>${contact.phone}</td>
+                        <td>${contact.phoneNumber}</td>
                         <td>${contact.message}</td>
                         <td>
                             <button class="btn btn-sm btn-danger" onclick="deleteContact(${contact.id})">

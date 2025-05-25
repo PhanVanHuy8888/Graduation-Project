@@ -9,11 +9,11 @@ import com.example.graduate_proejct.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,8 +34,25 @@ public class OrderService {
     @Transactional
     public Order createOrder(OrderRequest orderRequest) {
 
-        User user = userRepository.findById(orderRequest.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = null;
+
+        if (orderRequest.getUserId() != null) {
+            // Tìm người dùng đăng nhập
+            user = userRepository.findById(orderRequest.getUserId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+        } else {
+            // Tạo người dùng khách
+            user = new User();
+
+            user.setUserName(orderRequest.getUsername());
+            user.setCreatedBy(orderRequest.getUsername());
+            user.setPhone(orderRequest.getPhone());
+            user.setEmail(orderRequest.getEmail());
+            user.setAddress(orderRequest.getAddress());
+            user = userRepository.save(user);
+        }
+
+
         Random random = new Random();
         int randomNum = random.nextInt(1000);
         Order order = new Order();
@@ -45,8 +62,13 @@ public class OrderService {
         order.setAddress(orderRequest.getAddress());
         order.setNote(orderRequest.getNote());
         order.setPayment(orderRequest.getPayment());
-        order.setPaymentStatus("Processing");
-        order.setUser(user);
+        order.setUser(user);  // Gắn user vào đơn hàng
+
+        if ("COD".equals(orderRequest.getPayment())) {
+            order.setPaymentStatus("Đang xử lý");
+        } else {
+            order.setPaymentStatus("Đã thanh toán");
+        }
 
         order = orderRepository.save(order);
 
@@ -74,7 +96,11 @@ public class OrderService {
         }).collect(Collectors.toList());
 
         orderDetailRepository.saveAll(orderDetails);
-        cartRepository.deleteCartByUserId(orderRequest.getUserId());
+
+        // Xóa giỏ hàng của người dùng (cho người dùng đã đăng nhập)
+        if (orderRequest.getUserId() != null) {
+            cartRepository.deleteCartByUserId(orderRequest.getUserId());
+        }
 
         return order;
     }
@@ -85,12 +111,12 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found"));
     }
 
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+    public Page<Order> getAllOrders(Pageable pageable) {
+        return orderRepository.findAll(pageable);
     }
 
-    public Order updateOrder(Integer id, Order orderDetails) {
-        Order order = getOrderById(id);
+//    public Order updateOrder(Integer id, Order orderDetails) {
+//        Order order = getOrderById(id);
 //        order.setUser(orderDetails.getUser());
 //        order.setEmail(orderDetails.getEmail());
 //        order.setAddress(orderDetails.getAddress());
@@ -98,8 +124,8 @@ public class OrderService {
 //        order.setMedicines(orderDetails.getMedicines());
 //        order.setPrice(orderDetails.getPrice());
 //        order.setPay(orderDetails.getPay());
-        return orderRepository.save(order);
-    }
+//        return orderRepository.save(order);
+//    }
 
     public void deleteOrder(Integer id) {
         orderRepository.deleteById(id);
@@ -111,6 +137,20 @@ public class OrderService {
 
     public long countAllOrders() {
         return orderRepository.count();
+    }
+
+    public void markAsPaid(Integer orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.setPaymentStatus("PAID");
+        orderRepository.save(order);
+    }
+
+    public String getOrderStatus(Integer orderId) {
+        return orderRepository.findById(orderId)
+                .map(Order::getPayment)
+                .orElse("PENDING");
     }
 }
 

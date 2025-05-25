@@ -15,8 +15,8 @@ function fetchArticles() {
                             <td><img src="${article.image}" alt="default.jpg" style="width: 50px; height: auto;"></td>
                             <td>${article.description.length > 10 ? article.description.substring(0, 10) + '...' : article.description}</td>
                             <td>
-                                <button class="btn btn-warning btn-sm" onclick="showUpdateModal(${article.id}, '${article.title}', '${article.description}')">Update</button>
-                                <button class="btn btn-danger btn-sm" onclick="showDeleteModal(${article.id})">Delete</button>
+                                <button class="btn btn-warning btn-sm" onclick="showUpdateModal(${article.id}, '${article.title}', '${article.description}')">Sửa</button>
+                                <button class="btn btn-danger btn-sm" onclick="showDeleteModal(${article.id})">Xoá</button>
                             </td>
                         `;
                 articleList.appendChild(row);
