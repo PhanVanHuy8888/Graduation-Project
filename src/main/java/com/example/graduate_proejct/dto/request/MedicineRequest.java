@@ -39,6 +39,18 @@ public class MedicineRequest {
 
     private String origin;
 
+    private String measurement;
+
+    private String useOfMedicine;
+
+    private String usageOfMedicine;
+
+    private String preservation;
+
+    private String sideEffects;
+
+    private String note;
+
     private Integer categoryMedicineId;
 
     private Integer supplierId;

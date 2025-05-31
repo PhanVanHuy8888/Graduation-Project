@@ -29,7 +29,9 @@ public class Medicine extends AbstractEntity<Integer>{
 
     private String registrationNumber;
 
-    private String qualityStandards;
+    private String  useOfMedicine;
+
+    private String  usageOfMedicine;
 
     private String shelfLife;
 
@@ -39,7 +41,15 @@ public class Medicine extends AbstractEntity<Integer>{
 
     private String specification;
 
+    private String preservation;
+
     private String origin;
+
+    private String note;
+
+    private String sideEffects;
+
+    private String measurement;
 
     @ManyToOne
     @JoinColumn(name = "category_medicine_id", nullable = false)

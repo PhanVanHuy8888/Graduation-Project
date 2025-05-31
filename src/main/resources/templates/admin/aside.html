@@ -8,7 +8,7 @@
       <div class="profile-desc">
         <div class="profile-pic">
           <div class="profile-name">
-            <h5 class="mb-0 font-weight-normal" th:text="${username}"></h5>
+            <h5 class="mb-0 font-weight-normal" th:text="${usernames}"></h5>
             <span>Gold Member</span>
           </div>
         </div>
@@ -102,14 +102,14 @@
       <li class="nav-item dropdown">
         <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
           <div class="navbar-profile">
-            <p class="mb-0 d-none d-sm-block navbar-profile-name" th:text="${username}"></p>
+            <p class="mb-0 d-none d-sm-block navbar-profile-name" th:text="${usernames}"></p>
             <i class="mdi mdi-menu-down d-none d-sm-block"></i>
           </div>
         </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
              aria-labelledby="profileDropdown">
           <div class="preview-item-content">
-            <a  th:href="@{/logout}" class="p-3 mb-0 preview-subject mb-1">Log out</a>
+            <a  th:href="@{/logout}" class="p-4 mb-0 preview-subject mb-1">Log out</a>
           </div>
           <div class="dropdown-divider"></div>
         </div>

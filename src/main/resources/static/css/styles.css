@@ -1,21 +1,30 @@
 
 body {
+    background-image: url('https://images.pexels.com/photos/208541/pexels-photo-208541.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') !important;
     background: linear-gradient(to right, #6a11cb, #2575fc);
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0;
+    padding: 0;
 }
 
 .container {
     max-width: 400px;
+    width: 100%;
     background-color: #ffffff;
     padding: 40px 30px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 20px;
 }
+
 
 .form-signin i {
     margin-right: 10px;

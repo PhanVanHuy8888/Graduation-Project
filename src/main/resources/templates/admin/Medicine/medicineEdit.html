@@ -46,31 +46,55 @@
     <form id="editMedicineForm" enctype="multipart/form-data">
         <input type="hidden" id="medicineId">
 
-        <div class="mb-3"><label class="form-label">Tên thuốc</label><input type="text" id="name" class="form-control" required></div>
-        <div class="mb-3"><label class="form-label">Giá</label><input type="number" id="price" class="form-control" required></div>
-        <div class="mb-3"><label class="form-label">Mô tả</label><input type="text" id="description" class="form-control" required></div>
-        <div class="mb-3"><label class="form-label">Nhà sản xuất</label><input type="text" id="manufacturer" class="form-control" required></div>
-        <div class="mb-3"><label class="form-label">Thành phần</label><input type="text" id="ingredient" class="form-control" required></div>
-        <div class="mb-3"><label class="form-label">Số đăng ký</label><input type="text" id="registrationNumber" class="form-control" required></div>
-        <div class="mb-3"><label class="form-label">Tiêu chuẩn chất lượng</label><input type="text" id="qualityStandards" class="form-control" required></div>
-        <div class="mb-3"><label class="form-label">Thời hạn sử dụng</label><input type="text" id="shelfLife" class="form-control" required></div>
-        <div class="mb-3"><label class="form-label">Dạng bào chế</label><input type="text" id="dosageForm" class="form-control" required></div>
-        <div class="mb-3"><label class="form-label">Đặc điểm kỹ thuật</label><input type="text" id="specification" class="form-control" required></div>
-        <div class="mb-3"><label class="form-label">Xuất xứ</label><input type="text" id="origin" class="form-control" required></div>
-        <div class="mb-3"><label class="form-label">Số lượng</label><input type="text" id="quantity" class="form-control" required></div>
+        <div class="mb-3"><label class="form-label">Tên thuốc</label><input type="text" id="name" class="form-control" ></div>
+        <div class="mb-3"><label class="form-label">Giá</label><input type="number" id="price" class="form-control" ></div>
+        <div class="mb-3"><label class="form-label">Mô tả</label><input type="text" id="description" class="form-control" ></div>
+        <div class="mb-3"><label class="form-label">Nhà sản xuất</label><input type="text" id="manufacturer" class="form-control" ></div>
+        <div class="mb-3"><label class="form-label">Thành phần</label><input type="text" id="ingredient" class="form-control" ></div>
+        <div class="mb-3"><label class="form-label">Số đăng ký</label><input type="text" id="registrationNumber" class="form-control" ></div>
+        <div class="mb-3">
+            <label class="form-label">Thời hạn sử dụng</label>
+            <select id="shelfLife" class="form-control">
+                <option value="">-- Chọn thời hạn sử dụng --</option>
+                <option value="3 tháng">3 tháng</option>
+                <option value="6 tháng">6 tháng</option>
+                <option value="1 năm">1 năm</option>
+                <option value="2 năm">2 năm</option>
+            </select>
+        </div>
+        <div class="mb-3"><label class="form-label">Dạng bào chế</label><input type="text" id="dosageForm" class="form-control" ></div>
+        <div class="mb-3"><label class="form-label">Cách dùng</label><input type="text" id="usageOfMedicine" class="form-control" ></div>
+        <div class="mb-3"><label class="form-label">Lưu ý</label><input type="text" id="note" class="form-control" ></div>
+        <div class="mb-3"><label class="form-label">Bảo quản</label><input type="text" id="preservation" class="form-control" ></div>
+        <div class="mb-3"><label class="form-label">Tác dụng phụ</label><input type="text" id="sideEffects" class="form-control" ></div>
+        <div class="mb-3"><label class="form-label">Công dụng</label><input type="text" id="useOfMedicine" class="form-control" ></div>
+        <div class="mb-3"><label class="form-label">Quy cách</label><input type="text" id="specification" class="form-control" ></div>
+        <div class="mb-3"><label class="form-label">Xuất xứ</label><input type="text" id="origin" class="form-control" ></div>
+        <div class="mb-3"><label class="form-label">Số lượng</label><input type="text" id="quantity" class="form-control" ></div>
+        <div class="mb-3">
+            <label class="form-label">Đơn vị tính</label>
+            <select id="measurement" class="form-control" >
+                <option value="">-- Chọn đơn vị tính --</option>
+                <option value="Hộp">Hộp</option>
+                <option value="Vỉ">Vỉ</option>
+                <option value="Viên">Viên</option>
+                <option value="Gói">Gói</option>
+                <option value="Tuýp">Tuýp</option>
+            </select>
+        </div>
         <div class="mb-3">
             <label class="form-label">Ảnh</label>
             <input type="file" id="image" class="form-control" accept="image/*">
         </div>
         <div class="mb-3">
             <label class="form-label">Loại thuốc</label>
-            <select id="categoryMedicine" class="form-control" required>
+            <select id="categoryMedicine" class="form-control" >
                 <option value="">-- Chọn loại thuốc --</option>
             </select>
         </div>
         <div class="mb-3">
             <label class="form-label">Nhà cung cấp</label>
-            <select id="supplier" class="form-control" required>
+            <select id="supplier" class="form-control" >
                 <option value="">-- Chọn nhà cung cấp --</option>
             </select>
         </div>

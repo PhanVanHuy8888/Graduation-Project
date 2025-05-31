@@ -51,7 +51,7 @@ function fetchMedicines(page = 0, size = 5) {
                     <td>
                         <img src="${medicine.image}" width="150" alt="${medicine.image}" onerror="this.onerror=null;this.src='default.jpg';">
                     </td>
-                    <td>${medicine.price}</td>
+                    <td>${medicine.price}đ</td>
                     <td>
                         <a class="badge badge-outline-warning" href="edit-medicine?id=${medicine.id}">Sửa</a>
                         <a class="badge badge-outline-info" href="#" onclick='viewMedicine(${JSON.stringify(medicine)})'>Xem</a>
@@ -75,12 +75,17 @@ function viewMedicine(medicine) {
     document.getElementById("medicineManufacturer").textContent = medicine.manufacturer;
     document.getElementById("medicineIngredient").textContent = medicine.ingredient;
     document.getElementById("medicineRegistrationNumber").textContent = medicine.registrationNumber;
-    document.getElementById("medicineQualityStandards").textContent = medicine.qualityStandards;
     document.getElementById("medicineShelfLife").textContent = medicine.shelfLife;
     document.getElementById("medicineDosageForm").textContent = medicine.dosageForm;
     document.getElementById("medicineQuantity").textContent = medicine.quantity;
     document.getElementById("medicineSpecification").textContent = medicine.specification;
     document.getElementById("medicineOrigin").textContent = medicine.origin;
+    document.getElementById("medicineMeasurement").textContent = medicine.measurement;
+    document.getElementById("medicineUsageOfMedicine").textContent = medicine.usageOfMedicine;
+    document.getElementById("medicineNote").textContent = medicine.note;
+    document.getElementById("medicinePreservation").textContent = medicine.preservation;
+    document.getElementById("medicineSideEffects").textContent = medicine.sideEffects;
+    document.getElementById("medicineUseOfMedicine").textContent = medicine.useOfMedicine;
 
     // Mở modal bằng JavaScript thuần
     let modal = new bootstrap.Modal(document.getElementById("medicineModal"));
@@ -270,7 +275,6 @@ async function addToCart(medicineName, price, quantity = 1) {
 }
 
 
-
 // End add Cart
 
 // Xóa thuốc
@@ -313,12 +317,17 @@ if (window.location.pathname.includes("/add-medicine")) {
             manufacturer: document.getElementById("manufacturer").value,
             ingredient: document.getElementById("ingredient").value,
             registrationNumber: document.getElementById("registrationNumber").value,
-            qualityStandards: document.getElementById("qualityStandards").value,
             shelfLife: document.getElementById("shelfLife").value,
             dosageForm: document.getElementById("dosageForm").value,
             specification: document.getElementById("specification").value,
             origin: document.getElementById("origin").value,
+            measurement: document.getElementById("measurement").value,
             quantity: document.getElementById("quantity").value,
+            usageOfMedicine: document.getElementById("usageOfMedicine").value,
+            note: document.getElementById("note").value,
+            preservation: document.getElementById("preservation").value,
+            sideEffects: document.getElementById("sideEffects").value,
+            useOfMedicine: document.getElementById("useOfMedicine").value,
             categoryMedicineId: categoryId,
             supplierId: supplierId
         };
@@ -365,11 +374,16 @@ if (window.location.pathname.includes("/edit-medicine")) {
                 document.getElementById("manufacturer").value = data.manufacturer;
                 document.getElementById("ingredient").value = data.ingredient;
                 document.getElementById("registrationNumber").value = data.registrationNumber;
-                document.getElementById("qualityStandards").value = data.qualityStandards;
                 document.getElementById("shelfLife").value = data.shelfLife;
                 document.getElementById("dosageForm").value = data.dosageForm;
                 document.getElementById("specification").value = data.specification;
                 document.getElementById("origin").value = data.origin;
+                document.getElementById("measurement").value = data.measurement;
+                document.getElementById("medicineUsageOfMedicine").value = data.usageOfMedicine;
+                document.getElementById("medicineNote").value = data.note;
+                document.getElementById("medicinePreservation").value = data.preservation;
+                document.getElementById("medicineSideEffects").value = data.sideEffects;
+                document.getElementById("medicineUseOfMedicine").value = data.useOfMedicine;
                 document.getElementById("quantity").value = data.quantity;
                 document.getElementById("categoryMedicine").value = data.categoryMedicine.id;
                 document.getElementById("supplier").value = data.supplier.id;
@@ -395,12 +409,17 @@ if (window.location.pathname.includes("/edit-medicine")) {
             manufacturer: document.getElementById("manufacturer").value,
             ingredient: document.getElementById("ingredient").value,
             registrationNumber: document.getElementById("registrationNumber").value,
-            qualityStandards: document.getElementById("qualityStandards").value,
             shelfLife: document.getElementById("shelfLife").value,
             dosageForm: document.getElementById("dosageForm").value,
             specification: document.getElementById("specification").value,
             origin: document.getElementById("origin").value,
+            measurement: document.getElementById("measurement").value,
             quantity: document.getElementById("quantity").value,
+            usageOfMedicine: document.getElementById("usageOfMedicine").value,
+            note: document.getElementById("note").value,
+            preservation: document.getElementById("preservation").value,
+            sideEffects: document.getElementById("sideEffects").value,
+            useOfMedicine: document.getElementById("useOfMedicine").value,
             categoryMedicineId: categoryId,
             supplierId: supplierId
         };
@@ -411,7 +430,6 @@ if (window.location.pathname.includes("/edit-medicine")) {
         if (imageFile) {
             formData.append("image", imageFile);
         } // Nếu không có ảnh, nó sẽ không được gửi đi
-
 
         fetch(`${API_URL}/${medicineId}`, {
             method: "PUT",
@@ -462,78 +480,96 @@ async function loadMedicineDetails(medicineId) {
         // Tạo HTML hiển thị thông tin sản phẩm
         const medicineCard = document.createElement('div');
         medicineCard.innerHTML = `
-            <div class="row gx-4 gx-lg-5 align-items-center">
-                <div class="col-md-6">
-                    <img class="w-100" src="${medicine.image}" alt="${medicine.name}">
-                </div>
-                <div class="col-md-6">
-                    <h1 class="display-5 fw-bolder">${medicine.name}</h1>
-                    <div class="fs-5 mb-5">
-                        <span>${formattedPrice}/Hộp</span>
+            <div>
+                <div style="border-radius: 15px;" class="bg-white rounded-5 shadow-sm p-5">
+                    <div class="row gx-4 gx-lg-5 ">
+                        <div class="col-md-6">
+                            <img class="w-100 rounded-3" src="${medicine.image}" alt="${medicine.name}">
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="fs-4">${medicine.name}</h5>
+                            <div class="fs-5 mb-3">
+                                <span>${formattedPrice}/${medicine.measurement}</span>
+                            </div>
+                            <div class="row mb-2 align-items-start">
+                                <div class="col-md-5"><p class="mb-0">Xuất xứ thương hiệu</p></div>
+                                <div class="col-md-7"><p class="mb-0">${medicine.manufacturer}</p></div>
+                            </div>
+                            <div class="row mb-2 align-items-start">
+                                <div class="col-md-5"><p class="mb-0">Quy cách</p></div>
+                                <div class="col-md-7"><p class="mb-0">${medicine.specification}</p></div>
+                            </div>
+                            <div class="row mb-2 align-items-start">
+                                <div class="col-md-5"><p class="mb-0">Danh mục</p></div>
+                                <div class="col-md-7"><p class="mb-0">${medicine.categoryMedicine.categoryMedicineName}</p></div>
+                            </div>
+                            <div class="d-flex">
+                                <input class="form-control text-center me-3" id="inputQuantity" type="number" value="1"
+                                       style="max-width: 3rem"/>
+                                <button class="btn btn-outline-dark btn-success flex-shrink-0" type="button" onclick="addToCart('${medicine.name}', ${medicine.price})">
+                                    <i class="me-1"></i>
+                                    Chọn mua
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <p class="lead">Xuất xứ thương hiệu: ${medicine.manufacturer}</p>
-                    <p class="lead">Danh mục: ${medicine.categoryMedicine.categoryMedicineName}</p>
-                    <div class="d-flex">
-                        <input class="form-control text-center me-3" id="inputQuantity" type="number" value="1"
-                               style="max-width: 3rem"/>
-                        <button class="btn btn-outline-dark flex-shrink-0" type="button" onclick="addToCart('${medicine.name}', ${medicine.price})">
-                            <i class="me-1"></i>
-                            Chọn mua
-                        </button>
+                </div>
+            </div>
+            <div style="border-radius: 15px;" class="bg-white rounded-4 shadow-sm mt-4 p-5">
+                <div class="row gx-4 gx-lg-5">
+                     <h5>Thông số và mô tả</h5>
+                     <div class="container">
+                        <div class="row mb-2 align-items-start">
+                            <div class="col-md-2"><p class="mb-0"><strong>Thành phần</strong></p></div>
+                            <div class="col-md-10"><p class="mb-0">${medicine.ingredient}</p></div>
+                        </div>
+                    
+                        <div class="row mb-2 align-items-start">
+                            <div class="col-md-2"><p class="mb-0"><strong>Số đăng ký</strong></p></div>
+                            <div class="col-md-10"><p class="mb-0">${medicine.registrationNumber}</p></div>
+                        </div>
+                    
+                        <div class="row mb-2 align-items-start">
+                            <div class="col-md-2"><p class="mb-0"><strong>Công dụng</strong></p></div>
+                            <div class="col-md-10"><p class="mb-0">${medicine.useOfMedicine}</p></div>
+                        </div>
+                    
+                        <div class="row mb-2 align-items-start">
+                            <div class="col-md-2"><p class="mb-0"><strong>Cách dùng</strong></p></div>
+                            <div class="col-md-10"><p class="mb-0">${medicine.usageOfMedicine}</p></div>
+                        </div>
+                    
+                        <div class="row mb-2 align-items-start">
+                            <div class="col-md-2"><p class="mb-0"><strong>Tác dụng phụ</strong></p></div>
+                            <div class="col-md-10"><p class="mb-0">${medicine.sideEffects}</p></div>
+                        </div>
+                    
+                        <div class="row mb-2 align-items-start">
+                            <div class="col-md-2"><p class="mb-0"><strong>Lưu ý</strong></p></div>
+                            <div class="col-md-10"><p class="mb-0">${medicine.note}</p></div>
+                        </div>
+                    
+                        <div class="row mb-2 align-items-start">
+                            <div class="col-md-2"><p class="mb-0"><strong>Bảo quản</strong></p></div>
+                            <div class="col-md-10"><p class="mb-0">${medicine.preservation}</p></div>
+                        </div>
+                    
+                        <div class="row mb-2 align-items-start">
+                            <div class="col-md-2"><p class="mb-0"><strong>Hạn sử dụng</strong></p></div>
+                            <div class="col-md-10"><p class="mb-0">${medicine.shelfLife}</p></div>
+                        </div>
+                    
+                        <div class="row mb-2 align-items-start">
+                            <div class="col-md-2"><p class="mb-0"><strong>Dạng bào chế</strong></p></div>
+                            <div class="col-md-10"><p class="mb-0">${medicine.dosageForm}</p></div>
+                        </div>
+                        <div class="row mb-2 align-items-start">
+                            <div class="col-md-2"><p class="mb-0"><strong>Mô tả</strong></p></div>
+                            <div class="col-md-10"><p class="mb-0">${medicine.description}</p></div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <h5>Thông số và mô tả</h5>
-            <div class="row gx-4 gx-lg-5">
-                <div class="col-md-6">
-                    <p><strong>Thành phần:</strong></p>
-                </div>
-                <div class="col-md-6">
-                    <p>${medicine.ingredient}</p>
-                </div>
-            
-                <div class="col-md-6">
-                    <p><strong>Số đăng ký:</strong></p>
-                </div>
-                <div class="col-md-6">
-                    <p>${medicine.registrationNumber}</p>
-                </div>
-            
-                <div class="col-md-6">
-                    <p><strong>Hạn dùng (theo thành phần):</strong></p>
-                </div>
-                <div class="col-md-6">
-                    <p>${medicine.ingreshelfLifedient}</p>
-                </div>
-            
-                <div class="col-md-6">
-                    <p><strong>Hạn sử dụng:</strong></p>
-                </div>
-                <div class="col-md-6">
-                    <p>${medicine.shelfLife}</p>
-                </div>
-            
-                <div class="col-md-6">
-                    <p><strong>Dạng bào chế:</strong></p>
-                </div>
-                <div class="col-md-6">
-                    <p>${medicine.dosageForm}</p>
-                </div>
-            
-                <div class="col-md-6">
-                    <p><strong>Quy cách:</strong></p>
-                </div>
-                <div class="col-md-6">
-                    <p>${medicine.specification}</p>
-                </div>
-               
-            </div>
-            <div class="mt-3">
-                <p><strong>Mô tả:</strong></p>
-                <p>${medicine.description}</p>
-            </div>
-            
-
         `;
 
         medicineContainer.appendChild(medicineCard);
@@ -561,7 +597,7 @@ function showAlert() {
 }
 
 
-async function fetchProducts(page = 0, size = 4) {
+async function fetchProducts(page = 0, size = 3) {
     try {
         const response = await fetch(`${API_URL}?page=${page}&size=${size}`);
         const data = await response.json();

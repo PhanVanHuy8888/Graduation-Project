@@ -28,6 +28,7 @@ public class IndexController {
 
             if (user != null) {
                 model.addAttribute("username", username);
+                model.addAttribute("usernames", user.getUserName());
                 model.addAttribute("userId", user.getId());
                 model.addAttribute("isAuthenticated", true); // Cập nhật lại giá trị
                 System.out.println(user.getId());
@@ -36,7 +37,6 @@ public class IndexController {
 
         return "views/index";
     }
-
 
     @GetMapping("/access-denied")
     public String error() {
@@ -62,6 +62,7 @@ public class IndexController {
 
             if (user != null) {
                 model.addAttribute("username", username);
+                model.addAttribute("usernames", user.getUserName());
                 model.addAttribute("userId", user.getId());
                 model.addAttribute("isAuthenticated", true); // Cập nhật lại giá trị
                 System.out.println(user.getId());
@@ -84,6 +85,7 @@ public class IndexController {
 
             if (user != null) {
                 model.addAttribute("username", username);
+                model.addAttribute("usernames", user.getUserName());
                 model.addAttribute("userId", user.getId());
                 model.addAttribute("isAuthenticated", true); // Cập nhật lại giá trị
                 System.out.println(user.getId());
@@ -106,6 +108,7 @@ public class IndexController {
 
             if (user != null) {
                 model.addAttribute("username", username);
+                model.addAttribute("usernames", user.getUserName());
                 model.addAttribute("userId", user.getId());
                 model.addAttribute("isAuthenticated", true); // Cập nhật lại giá trị
                 System.out.println(user.getId());
@@ -128,6 +131,7 @@ public class IndexController {
 
             if (user != null) {
                 model.addAttribute("username", username);
+                model.addAttribute("usernames", user.getUserName());
                 model.addAttribute("userId", user.getId());
                 model.addAttribute("isAuthenticated", true); // Cập nhật lại giá trị
                 System.out.println(user.getId());
@@ -150,6 +154,7 @@ public class IndexController {
 
             if (user != null) {
                 model.addAttribute("username", username);
+                model.addAttribute("usernames", user.getUserName());
                 model.addAttribute("userId", user.getId());
                 model.addAttribute("isAuthenticated", true); // Cập nhật lại giá trị
                 System.out.println(user.getId());
@@ -172,6 +177,7 @@ public class IndexController {
 
             if (user != null) {
                 model.addAttribute("username", username);
+                model.addAttribute("usernames", user.getUserName());
                 model.addAttribute("userId", user.getId());
                 model.addAttribute("isAuthenticated", true); // Cập nhật lại giá trị
                 System.out.println(user.getId());
@@ -194,6 +200,7 @@ public class IndexController {
 
             if (user != null) {
                 model.addAttribute("username", username);
+                model.addAttribute("usernames", user.getUserName());
                 model.addAttribute("userId", user.getId());
                 model.addAttribute("isAuthenticated", true); // Cập nhật lại giá trị
                 System.out.println(user.getId());
@@ -201,9 +208,6 @@ public class IndexController {
         }
         return "views/search-result";
     }
-
-
-
 
     @GetMapping("/check-out")
     public String Checkout() {
